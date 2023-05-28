@@ -30,7 +30,6 @@ tasks:
       DEPS: >-
         age
         ansible
-        cloudflare/cloudflare/cloudflared
         direnv
         fluxcd/tap/flux
         go-task/tap/go-task

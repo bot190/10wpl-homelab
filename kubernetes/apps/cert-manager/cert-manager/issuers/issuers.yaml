@@ -1,41 +1,13 @@
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-production
+  name: self-signed-production
 spec:
-  acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
-    email: "${SECRET_CLOUDFLARE_EMAIL}"
-    privateKeySecretRef:
-      name: letsencrypt-production
-    solvers:
-      - dns01:
-          cloudflare:
-            email: "${SECRET_CLOUDFLARE_EMAIL}"
-            apiKeySecretRef:
-              name: cert-manager-secret
-              key: api-key
-        selector:
-          dnsZones:
-            - "${SECRET_DOMAIN}"
+  selfSigned: {}
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-staging
+  name: self-signed-staging
 spec:
-  acme:
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
-    email: "${SECRET_CLOUDFLARE_EMAIL}"
-    privateKeySecretRef:
-      name: letsencrypt-staging
-    solvers:
-      - dns01:
-          cloudflare:
-            email: "${SECRET_CLOUDFLARE_EMAIL}"
-            apiKeySecretRef:
-              name: cert-manager-secret
-              key: api-key
-        selector:
-          dnsZones:
-            - "${SECRET_DOMAIN}"
+  selfSigned: {}
