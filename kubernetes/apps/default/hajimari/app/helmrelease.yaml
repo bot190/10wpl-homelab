@@ -38,8 +38,7 @@ spec:
       showAppUrls: false
       defaultEnable: true
       namespaceSelector:
-        matchNames:
-          - default
+        any: true
     ingress:
       main:
         enabled: true
