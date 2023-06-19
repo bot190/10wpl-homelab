@@ -7,3 +7,4 @@ resources:
   - ./nzbhydra/ks.yaml
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
+  - ./lidarr/ks.yaml
