@@ -39,6 +39,12 @@ spec:
       defaultEnable: true
       namespaceSelector:
         any: true
+      bookmarks:
+        - group: External
+          bookmarks:
+            - Name: Radar
+              icon: mdi:weather-cloudy
+              url: https://radar.weather.gov/?settings=v1_eyJhZ2VuZGEiOnsiaWQiOiJuYXRpb25hbCIsImNlbnRlciI6Wy05OC4xNzQsMzguMzc2XSwibG9jYXRpb24iOlstODEuOTE0LDM4LjgwNV0sInpvb20iOjUsImxheWVyIjoiYnJlZl9xY2QifSwiYW5pbWF0aW5nIjp0cnVlLCJiYXNlIjoic3RhbmRhcmQiLCJhcnRjYyI6ZmFsc2UsImNvdW50eSI6ZmFsc2UsImN3YSI6ZmFsc2UsInJmYyI6ZmFsc2UsInN0YXRlIjp0cnVlLCJtZW51Ijp0cnVlLCJzaG9ydEZ1c2VkT25seSI6dHJ1ZSwib3BhY2l0eSI6eyJhbGVydHMiOjEsImxvY2FsIjowLjYsImxvY2FsU3RhdGlvbnMiOjAuOCwibmF0aW9uYWwiOjAuNn19
     ingress:
       main:
         enabled: true
