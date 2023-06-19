@@ -49,7 +49,7 @@ spec:
         annotations:
           hajimari.io/icon: mdi:feature-search
         hosts:
-          - host: &host "nzbhydra.${SECRET_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
