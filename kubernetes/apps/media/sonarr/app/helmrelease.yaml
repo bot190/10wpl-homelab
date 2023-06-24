@@ -26,7 +26,7 @@ spec:
     image:
       # https://hub.docker.com/r/linuxserver/sonarr
       repository: lscr.io/linuxserver/sonarr
-      tag: latest
+      tag: 3.0.10
     env:
       TZ: "${TIMEZONE}"
       PUID: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"

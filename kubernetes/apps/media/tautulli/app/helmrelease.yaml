@@ -26,7 +26,7 @@ spec:
     image:
       # https://hub.docker.com/r/linuxserver/tautulli
       repository: lscr.io/linuxserver/tautulli
-      tag: latest
+      tag: 2.12.4
     env:
       TZ: "${TIMEZONE}"
       PUID: "${SECURITY_CONTEXT_RUN_AS_USER}"

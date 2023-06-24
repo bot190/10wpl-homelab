@@ -26,7 +26,7 @@ spec:
     image:
       # https://hub.docker.com/r/linuxserver/bazarr
       repository: lscr.io/linuxserver/bazarr
-      tag: latest
+      tag: 1.2.2
     env:
       TZ: "${TIMEZONE}"
       PUID: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"

@@ -26,7 +26,7 @@ spec:
     image:
       # https://hub.docker.com/r/linuxserver/lidarr
       repository: lscr.io/linuxserver/lidarr
-      tag: latest
+      tag: 1.1.4
     env:
       TZ: "${TIMEZONE}"
       PUID: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
