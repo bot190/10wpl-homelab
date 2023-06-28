@@ -39,12 +39,49 @@ spec:
       defaultEnable: true
       namespaceSelector:
         any: true
-      bookmarks:
+      globalBookmarks:
         - group: External
           bookmarks:
-            - Name: Radar
+            - name: Radar
               icon: mdi:weather-cloudy
               url: https://radar.weather.gov/?settings=v1_eyJhZ2VuZGEiOnsiaWQiOiJuYXRpb25hbCIsImNlbnRlciI6Wy05OC4xNzQsMzguMzc2XSwibG9jYXRpb24iOlstODEuOTE0LDM4LjgwNV0sInpvb20iOjUsImxheWVyIjoiYnJlZl9xY2QifSwiYW5pbWF0aW5nIjp0cnVlLCJiYXNlIjoic3RhbmRhcmQiLCJhcnRjYyI6ZmFsc2UsImNvdW50eSI6ZmFsc2UsImN3YSI6ZmFsc2UsInJmYyI6ZmFsc2UsInN0YXRlIjp0cnVlLCJtZW51Ijp0cnVlLCJzaG9ydEZ1c2VkT25seSI6dHJ1ZSwib3BhY2l0eSI6eyJhbGVydHMiOjEsImxvY2FsIjowLjYsImxvY2FsU3RhdGlvbnMiOjAuOCwibmF0aW9uYWwiOjAuNn19
+        - group: CBR
+          bookmarks:
+            - name: Router
+              icon: mdi:wall-fire
+              url: https://cbr-firewall.${SECRET_DOMAIN}
+            - name: Switch
+              icon: mdi:switch
+              url: https://cbr-sw01-master.${SECRET_DOMAIN}:4343/
+            - name: HP iLO
+              icon: mdi:server
+              url: https:/CBR-ILO.${SECRET_DOMAIN}
+            - name: HP Proxmox
+              icon: mdi:server-network
+              url: https://cbr-proxmox-0.${SECRET_DOMAIN}:8006/
+            - name: Dell iDrac
+              icon: mdi:server
+              url: https://cbr-idrac.${SECRET_DOMAIN}
+            - name: Dell ESXi
+              icon: mdi:server-network
+              url: https://cbr-esxi-0.${SECRET_DOMAIN}/
+        - group: 40McK
+          bookmarks:
+            - name: Router
+              icon: mdi:wall-fire
+              url: https://40mck-firewall1.${SECRET_DOMAIN}
+            - name: Switch
+              icon: mdi:switch
+              url: http://40mck-switch-0.${SECRET_DOMAIN}
+            - name: WAP
+              icon: mdi:access-point
+              url: http://40mck-wap-0.${SECRET_DOMAIN}
+            - name: Home Assistant
+              icon: mdi:home-assistant
+              url: http://40mck-ha.${SECRET_DOMAIN}:8123
+            - name: Z-Wave
+              icon: mdi:z-wave
+              url: https://40mck-zwave.${SECRET_DOMAIN}:8091/
     ingress:
       main:
         enabled: true
