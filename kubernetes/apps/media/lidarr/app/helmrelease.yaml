@@ -24,19 +24,19 @@ spec:
       retries: 5
   values:
     image:
-      # https://hub.docker.com/r/linuxserver/lidarr
-      repository: lscr.io/linuxserver/lidarr
-      tag: 1.1.4
+      repository: ghcr.io/onedr0p/lidarr
+      tag: 1.1.4.3027@sha256:4e30e7525a4cfd20b0f4632b719bae5215258a9ebd2ef71bdbd99d140aee6a19
     env:
       TZ: "${TIMEZONE}"
-      PUID: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
-      PGID: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
     hostname: *app
     service:
       main:
         ports:
           http:
             port: 8686
+    podSecurityContext:
+      runAsUser: "${SECURITY_CONTEXT_RUN_AS_USER}"
+      runAsGroup: "${SECURITY_CONTEXT_RUN_AS_GROUP}"
     persistence:
       config:
         enabled: true
