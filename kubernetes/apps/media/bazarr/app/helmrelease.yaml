@@ -24,19 +24,19 @@ spec:
       retries: 5
   values:
     image:
-      # https://hub.docker.com/r/linuxserver/bazarr
-      repository: lscr.io/linuxserver/bazarr
-      tag: 1.2.2
+      repository: ghcr.io/onedr0p/bazarr
+      tag: 1.2.2@sha256:9656191a1347e44de7fc883912bb00d6a8d5c190dbd0dd77d5ba1ba075095b65
     env:
       TZ: "${TIMEZONE}"
-      PUID: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
-      PGID: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
     hostname: *app
     service:
       main:
         ports:
           http:
             port: 6767
+    podSecurityContext:
+      runAsUser: "${SECURITY_CONTEXT_RUN_AS_USER}"
+      runAsGroup: "${SECURITY_CONTEXT_RUN_AS_GROUP}"
     persistence:
       config:
         enabled: true
