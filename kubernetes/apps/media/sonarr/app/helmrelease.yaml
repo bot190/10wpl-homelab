@@ -24,19 +24,19 @@ spec:
       retries: 5
   values:
     image:
-      # https://hub.docker.com/r/linuxserver/sonarr
-      repository: lscr.io/linuxserver/sonarr
-      tag: 3.0.10
+      repository: ghcr.io/onedr0p/sonarr
+      tag: 3.0.10.1567@sha256:c890d6cada4319afb9c15e08d443b96040b183e9d74585166ce1c696f9494c65
     env:
       TZ: "${TIMEZONE}"
-      PUID: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
-      PGID: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
     hostname: *app
     service:
       main:
         ports:
           http:
             port: 8989
+    podSecurityContext:
+      runAsUser: "${SECURITY_CONTEXT_RUN_AS_USER}"
+      runAsGroup: "${SECURITY_CONTEXT_RUN_AS_GROUP}"
     persistence:
       config:
         enabled: true
