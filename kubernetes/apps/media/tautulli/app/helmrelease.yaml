@@ -24,19 +24,19 @@ spec:
       retries: 5
   values:
     image:
-      # https://hub.docker.com/r/linuxserver/tautulli
-      repository: lscr.io/linuxserver/tautulli
-      tag: 2.12.4
+      repository: ghcr.io/onedr0p/tautulli
+      tag: 2.12.4@sha256:d4b2306a6c34fdb82e8c1b2a61e71797a201664d7a7b0b602f8a524ef5e2b641
     env:
       TZ: "${TIMEZONE}"
-      PUID: "${SECURITY_CONTEXT_RUN_AS_USER}"
-      PGID: "${SECURITY_CONTEXT_RUN_AS_GROUP}"
     hostname: *app
     service:
       main:
         ports:
           http:
             port: 8181
+    podSecurityContext:
+      runAsUser: "${SECURITY_CONTEXT_RUN_AS_USER}"
+      runAsGroup: "${SECURITY_CONTEXT_RUN_AS_GROUP}"
     persistence:
       config:
         enabled: true
