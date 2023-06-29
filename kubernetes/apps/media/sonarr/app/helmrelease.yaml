@@ -35,8 +35,8 @@ spec:
           http:
             port: 8989
     podSecurityContext:
-      runAsUser: "${SECURITY_CONTEXT_RUN_AS_USER}"
-      runAsGroup: "${SECURITY_CONTEXT_RUN_AS_GROUP}"
+      runAsUser: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
+      runAsGroup: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
     persistence:
       config:
         enabled: true
