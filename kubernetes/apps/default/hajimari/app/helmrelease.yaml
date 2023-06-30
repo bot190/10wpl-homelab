@@ -49,39 +49,39 @@ spec:
           bookmarks:
             - name: Router
               icon: mdi:wall-fire
-              url: https://cbr-firewall.${SECRET_DOMAIN}
+              url: https://cbr-firewall.${INTERNAL_DOMAIN}
             - name: Switch
               icon: mdi:switch
-              url: https://cbr-sw01-master.${SECRET_DOMAIN}:4343/
+              url: https://cbr-sw01-master.${INTERNAL_DOMAIN}:4343/
             - name: HP iLO
               icon: mdi:server
-              url: https:/CBR-ILO.${SECRET_DOMAIN}
+              url: https:/CBR-ILO.${INTERNAL_DOMAIN}
             - name: HP Proxmox
               icon: mdi:server-network
-              url: https://cbr-proxmox-0.${SECRET_DOMAIN}:8006/
+              url: https://cbr-proxmox-0.${INTERNAL_DOMAIN}:8006/
             - name: Dell iDrac
               icon: mdi:server
-              url: https://cbr-idrac.${SECRET_DOMAIN}
+              url: https://cbr-idrac.${INTERNAL_DOMAIN}
             - name: Dell ESXi
               icon: mdi:server-network
-              url: https://cbr-esxi-0.${SECRET_DOMAIN}/
+              url: https://cbr-esxi-0.${INTERNAL_DOMAIN}/
         - group: 40McK
           bookmarks:
             - name: Router
               icon: mdi:wall-fire
-              url: https://40mck-firewall1.${SECRET_DOMAIN}
+              url: https://40mck-firewall1.${INTERNAL_DOMAIN}
             - name: Switch
               icon: mdi:switch
-              url: http://40mck-switch-0.${SECRET_DOMAIN}
+              url: http://40mck-switch-0.${INTERNAL_DOMAIN}
             - name: WAP
               icon: mdi:access-point
-              url: http://40mck-wap-0.${SECRET_DOMAIN}
+              url: http://40mck-wap-0.${INTERNAL_DOMAIN}
             - name: Home Assistant
               icon: mdi:home-assistant
-              url: http://40mck-ha.${SECRET_DOMAIN}:8123
+              url: http://40mck-ha.${INTERNAL_DOMAIN}:8123
             - name: Z-Wave
               icon: mdi:z-wave
-              url: https://40mck-zwave.${SECRET_DOMAIN}:8091/
+              url: https://40mck-zwave.${INTERNAL_DOMAIN}:8091/
     ingress:
       main:
         enabled: true
