@@ -76,6 +76,9 @@ spec:
             - name: WAP
               icon: mdi:access-point
               url: http://40mck-wap-0.${INTERNAL_DOMAIN}
+            - name: Router Proxmox
+              icon: mdi:access-point
+              url: https://40mck-proxmox-0.${INTERNAL_DOMAIN}:8006
             - name: Home Assistant
               icon: mdi:home-assistant
               url: http://40mck-ha.${INTERNAL_DOMAIN}:8123
