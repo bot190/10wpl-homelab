@@ -55,7 +55,7 @@ spec:
               url: https://cbr-sw01-master.${INTERNAL_DOMAIN}:4343/
             - name: HP iLO
               icon: mdi:server
-              url: https:/CBR-ILO.${INTERNAL_DOMAIN}
+              url: https://cbr-ilo.${INTERNAL_DOMAIN}
             - name: HP Proxmox
               icon: mdi:server-network
               url: https://cbr-proxmox-0.${INTERNAL_DOMAIN}:8006/
