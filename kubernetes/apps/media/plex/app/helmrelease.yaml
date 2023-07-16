@@ -40,8 +40,16 @@ spec:
     persistence:
       config:
         enabled: true
+        type: hostPath
+        accessMode: ReadWriteOnce
+        hostPath: /data/plex
+        hostPathType: DirectoryOrCreate
+        size: 10Gi
+      metadata:
+        enabled: true
         storageClass: zfs-nfs
-        mountPath: /config
+        accessMode: ReadWriteOnce
+        mountPath: /metadata
         size: 400Gi
       tv:
         enabled: true
