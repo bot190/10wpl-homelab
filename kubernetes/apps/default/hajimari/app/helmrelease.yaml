@@ -85,6 +85,23 @@ spec:
             - name: Z-Wave
               icon: mdi:z-wave
               url: https://40mck-zwave.${INTERNAL_DOMAIN}:8091/
+        - group: 10WPL
+          bookmarks:
+            - name: Router
+              icon: mdi:wall-fire
+              url: https://helgrind.${INTERNAL_DOMAIN}
+            - name: Ender3
+              icon: mdi:printer-3d
+              url: http://octopi.${INTERNAL_DOMAIN}
+            - name: Voron0
+              icon: mdi:printer-3d
+              url: http://voron0.${INTERNAL_DOMAIN}
+            - name: Home Assistant
+              icon: mdi:home-assistant
+              url: https://10wpl-ha.${INTERNAL_DOMAIN}:8123
+            - name: Z-Wave
+              icon: mdi:z-wave
+              url: https://10wpl-zwave.${INTERNAL_DOMAIN}:8091
     ingress:
       main:
         enabled: true
