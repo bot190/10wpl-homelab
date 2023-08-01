@@ -1,0 +1,112 @@
+---
+logger:
+  default: info
+  # logs:
+  #   frigate.record: debug
+
+mqtt:
+  host: mosquitto.default.svc.cluster.local
+  topic_prefix: frigate
+  user: "{FRIGATE_MQTT_USERNAME}"
+  password: "{FRIGATE_MQTT_PASSWORD}"
+
+database:
+  path: /data/frigate.db
+
+
+ffmpeg:
+  global_args: ["-hide_banner", "-loglevel", "warning"]
+  # hwaccel_args: ["-hwaccel", "vaapi", "-hwaccel_device", "/dev/dri/renderD128", "-hwaccel_output_format", "yuv420p"]
+
+snapshots:
+  enabled: true
+  timestamp: false
+  bounding_box: true
+  retain:
+    default: 30
+
+record:
+  enabled: true
+  retain:
+    days: 2
+    mode: all
+  events:
+    retain:
+      default: 30
+      mode: active_objects
+
+objects:
+  track: ["person", "car", "motorcycle"]
+  filters:
+    person:
+      min_area: 5000
+      max_area: 100000
+      threshold: 0.7
+
+birdseye:
+  restream: true
+
+go2rtc:
+  streams:
+    frigate_front_porch_hq: "{FRIGATE_FRONT_PORCH_CAM}_channel=1_stream=0.sdp?real_stream"
+    frigate_driveway_back_hq: "{FRIGATE_DRIVEWAY_BACK_CAM}/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif"
+    frigate_driveway_back_lq: "{FRIGATE_DRIVEWAY_BACK_CAM}/cam/realmonitor?channel=1&subtype=1&unicast=true&proto=Onvif"
+    frigate_driveway_front_hq: "{FRIGATE_DRIVEWAY_FRONT_CAM}_channel=1_stream=0.sdp?real_stream"
+    frigate_lean_to_hq: "{FRIGATE_LEAN_TO_CAM}_channel=1_stream=0.sdp?real_stream"
+    frigate_mailbox_hq: "{FRIGATE_MAILBOX_CAM}/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif"
+    frigate_mailbox_lq: "{FRIGATE_MAILBOX_CAM}/cam/realmonitor?channel=1&subtype=1&unicast=true&proto=Onvif"
+
+cameras:
+  frigate_porch:
+    ffmpeg:
+      inputs:
+        - path: rtsp://localhost:8554/frigate_front_porch_hq
+          roles: ["record", "detect"]
+    detect:
+      width: 1280
+      height: 720
+      fps: 10
+
+  frigate_driveway_back:
+    ffmpeg:
+      inputs:
+        - path: rtsp://localhost:8554/frigate_driveway_back_lq
+          roles: ["detect"]
+        - path: rtsp://localhost:8554/frigate_driveway_back_hq
+          roles: ["record"]
+    detect:
+      width: 704
+      height: 480
+      fps: 10
+
+  frigate_driveway_front:
+    ffmpeg:
+      inputs:
+        - path: rtsp://localhost:8554/frigate_driveway_front_hq
+          roles: ["record", "detect"]
+    detect:
+      width: 1280
+      height: 720
+      fps: 10
+
+  frigate_lean_to:
+    ffmpeg:
+      inputs:
+        - path: rtsp://localhost:8554/frigate_lean_to_hq
+          roles: ["record", "detect"]
+    detect:
+      width: 1280
+      height: 720
+      fps: 10
+
+  frigate_mailbox:
+    ffmpeg:
+      inputs:
+        - path: rtsp://localhost:8554/frigate_mailbox_lq
+          roles: ["detect"]
+        - path: rtsp://localhost:8554/frigate_mailbox_hq
+          roles: ["record"]
+    detect:
+      width: 704
+      height: 480
+      fps: 10
