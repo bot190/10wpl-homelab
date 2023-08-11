@@ -65,6 +65,9 @@ spec:
             - name: Dell ESXi
               icon: mdi:server-network
               url: https://cbr-esxi-0.${INTERNAL_DOMAIN}/
+            - name: Syncthing
+              icon: mdi:sync
+              url: http://storage1.${INTERNAL_DOMAIN}:8384/
         - group: 40McK
           bookmarks:
             - name: Router
@@ -85,6 +88,9 @@ spec:
             - name: Z-Wave
               icon: mdi:z-wave
               url: https://40mck-zwave.${INTERNAL_DOMAIN}:8091/
+            - name: Syncthing
+              icon: mdi:sync
+              url: http://40mck-storage-1.${INTERNAL_DOMAIN}:8384/
         - group: 10WPL
           bookmarks:
             - name: Router
@@ -102,6 +108,9 @@ spec:
             - name: Z-Wave
               icon: mdi:z-wave
               url: https://10wpl-zwave.${INTERNAL_DOMAIN}:8091
+            - name: Syncthing
+              icon: mdi:sync
+              url: http://svellhjall.${INTERNAL_DOMAIN}:8384/
     ingress:
       main:
         enabled: true
