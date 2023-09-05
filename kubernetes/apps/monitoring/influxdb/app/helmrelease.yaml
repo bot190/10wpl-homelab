@@ -28,16 +28,17 @@ spec:
       # password: "${SECRET_INFLUXDB_PASSWORD}"
       # token: "${SECRET_INFLUXDB_TOKEN}"
       existingSecret: influxdb-admin-secret
+    securityContext:
+      runAsUser: "${SECURITY_CONTEXT_RUN_AS_USER}"
+      runAsGroup: "${SECURITY_CONTEXT_RUN_AS_GROUP}"
+      fsGroup: "${SECURITY_CONTEXT_RUN_AS_GROUP}"
     ingress:
       enabled: true
       ingressClassName: nginx
       annotations:
         hajimari.io/icon: simple-icons:influxdb
-      hosts:
-        - &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
-      tls:
-        - hosts:
-            - *host
+      hostname: "influxdb.${SECRET_DOMAIN}"
+      tls: true
     persistence:
       enabled: true
       useExisting: true
