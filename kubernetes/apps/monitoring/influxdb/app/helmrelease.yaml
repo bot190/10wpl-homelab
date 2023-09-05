@@ -1,0 +1,50 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: influxdb
+  namespace: monitoring
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: influxdb2
+      version: 2.1.1
+      sourceRef:
+        kind: HelmRepository
+        name: influxdata-charts
+        namespace: flux-system
+  values:
+    image:
+      repository: "influxdb"
+      tag: "2.7.1"
+    adminUser:
+      organization: ${INTERNAL_DOMAIN}
+      bucket: default
+      user: admin
+      retention_policy: "0s"
+      ## Leave empty to generate a random password and token.
+      ## Or fill any of these values to use fixed values.
+      # password: "${SECRET_INFLUXDB_PASSWORD}"
+      # token: "${SECRET_INFLUXDB_TOKEN}"
+      existingSecret: influxdb-admin-secret
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        hajimari.io/icon: simple-icons:influxdb
+      hosts:
+        - &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+      tls:
+        - hosts:
+            - *host
+    persistence:
+      enabled: true
+      useExisting: true
+      name: influxdb-pvc
+    resources:
+      requests:
+        memory: 500Mi
+        cpu: 500m
+      limits:
+        memory: 3000Mi

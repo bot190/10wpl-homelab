@@ -7,3 +7,4 @@ resources:
   - ./kube-prometheus-stack/ks.yaml
   - ./kubernetes-dashboard/ks.yaml
   - ./speedtest-exporter/ks.yaml
+  - ./influxdb/ks.yaml
