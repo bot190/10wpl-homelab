@@ -1,0 +1,52 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: telegraf
+  namespace: monitoring
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: telegraf
+      version: 1.8.33
+      sourceRef:
+        kind: HelmRepository
+        name: influxdata-charts
+        namespace: flux-system
+  values:
+    controller:
+      strategy: RollingUpdate
+    podAnnotations:
+      reloader.stakater.com/search: "true"
+    image:
+      repo: "docker.io/library/telegraf"
+      tag: "1.27-alpine"
+    env:
+      TZ: "${TIMEZONE}"
+    resources:
+      requests:
+        cpu: 1
+        memory: 100Mi
+      limits:
+        cpu: 2
+        memory: 500Mi
+    volumes:
+      - name: telegraf-conf
+        projected:
+          sources:
+            - secret:
+                name: telegraf-influxdb2-output
+            - secret:
+                name: telegraf-vsphere-input
+            - secret:
+                name: telegraf-ping-input
+    mountPoints:
+      - name: telegraf-conf
+        mountPath: /etc/telegraf/telegraf.d
+    config:
+      outputs:
+      inputs:
+    metrics:
+      health:
+        enabled: true

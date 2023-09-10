@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: telegraf-vsphere-input
+    namespace: monitoring
+    annotations:
+        reloader.stakater.com/match: "true"
+stringData:
+    vsphere.conf: ENC[AES256_GCM,data:qg9hptC3uyDXZDqgUmn+p60SXgUoYK77g/qC3zhaoJ7V63CEnamOOYYbW7kP7+3hi7mRuK1bVrqMpByBrzikFPd4v7hGIKDBgi4KSHdxSzpYf2prR+Gf92SAqWn6rA7o1IVzwVudVbhV2rgvkLOspvGyqP6VwVB44en52VBOtUenTc1JZeYVnfaVgRKI/zaSIooT7MdIEH28Z9rPuu8kuAvMKyBjvPKxWbNW1A9Gv0XBc+TBQ0JXqpKt3W0zB4iJWpUX+HryvHaL8f3p1FzqPQ==,iv:LXl3Z1LHOYMKGseYbdP6BusgoOeHnaD9kST6b1HnI2Q=,tag:l/MjDqEww0EDO/W6dR8lEg==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1pwh7am3lq020tgffrk80cvwkhqfh5jjl3u85um2gakgk234644qsxp3zw2
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBvZW1NcDZzS0g4TmswQ2ph
+            RVQzbEl3ZmIxbHhzUVlYeEVkL0N5eU1ZMkVFCjNXNmhzVmR6M1dOZmlpUGNhM01w
+            aWtPb3p4SEp5ZnVYcGdiSElHc1BTSlEKLS0tIE1JY1dyZEhqdWtZdEU1aWE0RXJV
+            ZlFqMjFaTS9QOFRJK0lwK0dpY3VaT1EKQ6LipyuEaklyNX4KTnooEXf3Pc+jEp1x
+            VVnvOLCZvIxUrEt4m6WW+z5rTy40plooedi4S7Hk/QLRdPh1F9tXqg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-09-10T05:43:01Z"
+    mac: ENC[AES256_GCM,data:PMtGEmZd+lP/x3oy2BiBNN4t+lnZTZfnAG37ONY97BUYHlNrAtZNr/ksSnymLwvzXIQoF5OGPVpHJ7suOtwqLqD2EsABm9mildHDV5XVnV78jq+Z0xOpQ8En/Q4plg7bNk7UuXvRFrzmpetKgcs94gk2XoCp3Rje7e9/whgYNAA=,iv:1rqaiOQfk9uCMvDiqxZ5HlnHZuw3fWdoDWw2Yr8aAgo=,tag:pH3tTNHwwAt+5ucpwJfpBw==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.7.3

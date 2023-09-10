@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: telegraf-ping-input
+    namespace: monitoring
+    annotations:
+        reloader.stakater.com/match: "true"
+stringData:
+    ping.conf: ENC[AES256_GCM,data:XocTSXtyMqZZwMVzBc6D//43duDFfHahhJs/Skcn0SoA4MEPOXt4skvaHBr/0786JEzkoZVAqWvdkIAEVZQo23AL9hre1fi0l13kX88ikMbIBFKYXTRU17ZP/OwDVVl6XQZ8qvGbV2dRZ4aCKGz2UocrG0I9+A6WlncQYrv+SZyotWicRO1CevuTHM0a8BgfGCQUMCYQjQ+eU6YGu/3n/KYz3xOq8PTCB7GtcmP7CgfBhVIqMUPiv/ivcWwizrkB0vO2LotKq/gy6l0vk2NnkIP5wy7Nod8yMPHm9XapKMST3elpaqQxcEgOgRgwnSB0wg7gETJuls9AW7qfUD488jPuoKKj2XSXjQD/uY9ZmSqLSb2ASIqEFRCO29uep7BlgokrJQXaQIVo0jrteC4Oorm/fHMPp1/eAgZliwud4Q==,iv:q/NFZpNuZBzsUg1RTnPFht+Eu+hbYvcdvvsnezTAbjA=,tag:Xfjnioz8/riXmRcERHkodg==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1pwh7am3lq020tgffrk80cvwkhqfh5jjl3u85um2gakgk234644qsxp3zw2
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyd1BTK0hpTnNBWlZmaENT
+            L3BsZ1AreU51NUVvR0lNTnlydDljL1dBZWhZClozRUw0ZWVUaG9Tc1ptMEsybFN3
+            QkJ0WHFZTmRhS0FTUTZJVHJacHNQR0UKLS0tIEVEQlFGbUhCb2tZbTY2RU9UVGZQ
+            a2dIUjdkMWFPVlUySzJodEFFUjdRdzQKfIDL3R6/9ymAsCb3y1bodj5DmI0z13Qg
+            y1+uJePadc1yTXSg3fk49VVLT/FoiCcGJFzkIjAV+dfI8uZj+nvrjA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-09-10T05:42:57Z"
+    mac: ENC[AES256_GCM,data:01Zg2M0UyvVMqz9ymkcaxZjh7yLgceaXI8QAtpUBh8b1HcnCmCoQJ8KIunmvRcGTBB4uDmD9xrn5HjjVRj/+q0b8qaGZASC+Pw/f9MZS6b2wNg4YTQRi7Bvm+yL61BNFdi/04WxWvUk+oK6zIOq64b+D7YZC9fCIWk1U1+ftBSE=,iv:LCIGOgHRW8SBxD1BuPxIAAbG/6mYhnaMWguR1o0EZpM=,tag:X9plJ6zwun/rKvZTNYd0wA==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.7.3

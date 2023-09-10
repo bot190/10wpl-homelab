@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: telegraf-influxdb2-output
+    namespace: monitoring
+    annotations:
+        reloader.stakater.com/match: "true"
+stringData:
+    influxdb2.conf: ENC[AES256_GCM,data:zZAoXURwEENifm7sCHCJgD1u8TUGqXyN7BZjUCgzwMLhoF6d6j/IuX36mpdai5lQr8zhn27O0SbNRyGrNsIJvfd6sY36kVKYj5K8EddTjJRAk9y/atBZ0rpnBYX/VQM/1b1AjNS3imFkAQRpzXAP1YLcultvYKrA7X+IAe32qlWNrXiPZZHveTWgMpLt3HyFbm/7YBfJqMv1u0QMoP3VChp/tiwiMvyOusgui6aLlw1Pzb2dBlic+sAQH0EPgD8yjEJMwT2r3k+SNza+kJrG2MgOkNg4H9BpAA9c0Vt0gWMYmDHFmO393tr5Fy12lPQ2KkFW,iv:z19cqlvQsjgqUP2TXLru/2D0O0B404DlvWDJvQYUYk0=,tag:qKT7DGaHHSQB5XCg1aHUfA==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1pwh7am3lq020tgffrk80cvwkhqfh5jjl3u85um2gakgk234644qsxp3zw2
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBMV2QzZkdYRGQ4RE1KY2VW
+            aVVZcCtTbGJiZGdjMFJYV2YxQURWbnVRdmdzCkxhQXZoSE54Yml1YklVTlE5TnBm
+            NEI2b0Z5eGRSR1I1alZxZnVKWXpBTDAKLS0tIGZUbVkxT0hMTUVvN2hmeW5YM3Y2
+            SEJmbzArQ1ZlNlB2R25zamFob3BvU1UKpALqsBKtR8ZSg90n+KRffm0fhjqBC27i
+            hY76gwnGEl3240/D4hOIOZhlpnVyrWz5aov5SAEIgG8eNuRRP8pmNQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-09-10T05:42:52Z"
+    mac: ENC[AES256_GCM,data:CgiqJzN9zlzPZb7UfEwjhlyEyi6wZFsg78COKtIObD2NmbCVAih4qd10tD6y+T3DbkhXmsidoPmo2z8XKt5H1yxzuYQ3BDSM2p67mkRrfAZQLwr446KW8GP1TWBxYd0Ie2Ie+EJwq/PLUn6ncpU3xg1CF3ArsuhWGjctdfpE0qs=,iv:AsdJvsffV4mtv7UCFWkqOKi3dNtKXETmFLMeiV1KsD8=,tag:IiXzw8kUyHfbqoRTz3mGbA==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.7.3
