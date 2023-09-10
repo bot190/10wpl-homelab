@@ -6,3 +6,4 @@ resources:
   - ./secret.sops.yaml
   - ./helmrelease.yaml
   - ./influxdb-pvc.yaml
+  - ./grafana.sops.yaml
