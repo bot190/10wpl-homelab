@@ -38,7 +38,7 @@ spec:
       annotations:
         hajimari.io/icon: simple-icons:influxdb
       hostname: "influxdb.${SECRET_DOMAIN}"
-      tls: true
+      tls: false
     persistence:
       enabled: true
       useExisting: true
