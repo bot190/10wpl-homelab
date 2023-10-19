@@ -66,14 +66,13 @@ cameras:
           roles:
             - record
         - path: rtsp://localhost:8554/frigate_front_porch_lq
-          roles:
-            - detect
+          roles: ["detect"]
     live:
       stream_name: frigate_front_porch_hq
     detect:
       width: 704
       height: 480
-      fps: 20
+      fps: 10
 
   frigate_driveway_back:
     ffmpeg:
@@ -93,17 +92,15 @@ cameras:
     ffmpeg:
       inputs:
         - path: rtsp://localhost:8554/frigate_driveway_front_hq
-          roles:
-            - record
+          roles: ["record"]
         - path: rtsp://localhost:8554/frigate_driveway_front_lq
-          roles:
-            - detect
+          roles: ["detect"]
     live:
       stream_name: frigate_driveway_front_hq
     detect:
       width: 704
       height: 480
-      fps: 20
+      fps: 10
 
   frigate_lean_to:
     ffmpeg:
