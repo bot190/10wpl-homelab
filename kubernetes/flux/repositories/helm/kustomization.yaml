@@ -11,7 +11,6 @@ resources:
   - ./influxdata-charts.yaml
   - ./ingress-nginx.yaml
   - ./jetstack.yaml
-  - ./k8s-gateway.yaml
   - ./kubernetes-dashboard.yaml
   - ./metallb.yaml
   - ./metrics-server.yaml
