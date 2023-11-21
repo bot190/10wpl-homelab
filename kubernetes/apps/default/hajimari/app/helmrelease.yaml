@@ -91,6 +91,12 @@ spec:
             - name: Syncthing
               icon: mdi:sync
               url: http://40mck-storage-1.${INTERNAL_DOMAIN}:8384/
+            - name: Proxmox 1
+              icon: mdi:server
+              url: https://40mck-proxmox-1.${INTERNAL_DOMAIN}:8006
+            - name: Proxmox 1 BMC
+              icon: mdi:server-outline
+              url: https://40mck-proxmox-1-bmc.${INTERNAL_DOMAIN}
         - group: 10WPL
           bookmarks:
             - name: Router
