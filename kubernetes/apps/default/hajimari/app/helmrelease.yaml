@@ -104,7 +104,7 @@ spec:
               url: https://helgrind.${INTERNAL_DOMAIN}
             - name: Ender3
               icon: mdi:printer-3d
-              url: http://octopi.${INTERNAL_DOMAIN}
+              url: http://ender3.${INTERNAL_DOMAIN}
             - name: Voron0
               icon: mdi:printer-3d
               url: http://voron0.${INTERNAL_DOMAIN}
