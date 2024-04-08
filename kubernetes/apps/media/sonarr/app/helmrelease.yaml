@@ -25,7 +25,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/sonarr
-      tag: 4.0.2.1183@sha256:bbfcda0754272515ce12972924652699934074b46b11d27bc515c8ea5fb870f5
+      tag: 4.0.3.1413@sha256:4284def4b9fd2d3de2898ae3a6adc7aa84b9cd7f4407a35e7c61472519038396
     env:
       TZ: "${TIMEZONE}"
     hostname: *app
