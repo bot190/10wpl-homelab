@@ -25,7 +25,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/lidarr
-      tag: 2.1.7.4030@sha256:6b9564037159c2b90f32a2ee34683275783a4b8eff4b609e2d2b1c0654c94bac
+      tag: 2.2.5.4141@sha256:6eea2458a2b0da20fde3ad18b64f970acde9ede4645b9af89e193ec08b635d09
     env:
       TZ: "${TIMEZONE}"
     hostname: *app
