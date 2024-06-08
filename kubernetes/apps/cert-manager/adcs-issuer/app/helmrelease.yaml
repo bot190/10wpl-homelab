@@ -1,0 +1,46 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: adcs-issuer
+  namespace: cert-manager
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: adcs-issuer
+      version: v2.1.1
+      sourceRef:
+        kind: HelmRepository
+        name: djkormo-adcs-issuer
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllerManager:
+      arguments:
+        cluster-resource-namespace: cert-manager
+      environment:
+        KUBERNETES_CLUSTER_DOMAIN: "${SECRET_DOMAIN}"
+    simulator:
+      enabled: false
+    tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: "node-role.kubernetes.io/control-plane"
+                  operator: "Exists"

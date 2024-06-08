@@ -69,7 +69,7 @@ spec:
           namespaceSelector:
             any: true
       extraArgs:
-        default-ssl-certificate: "networking/${SECRET_DOMAIN/./-}-production-tls"
+        default-ssl-certificate: "networking/${SECRET_DOMAIN/./-}-ad-production-tls"
       resources:
         requests:
           cpu: 10m

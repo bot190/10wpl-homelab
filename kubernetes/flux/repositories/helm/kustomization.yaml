@@ -5,6 +5,7 @@ resources:
   - ./bitnami.yaml
   - ./bjw-s.yaml
   - ./democratic-csi.yaml
+  - ./djkormo-adcs-issuer.yaml
   - ./external-dns.yaml
   - ./grafana.yaml
   - ./hajimari.yaml

@@ -28,3 +28,23 @@ spec:
   dnsNames:
     - "${SECRET_DOMAIN}"
     - "*.${SECRET_DOMAIN}"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  annotations:
+  name: "${SECRET_DOMAIN/./-}-ad-production"
+  namespace: networking
+spec:
+  commonName: "${SECRET_DOMAIN}"
+  dnsNames:
+    - "${SECRET_DOMAIN}"
+    - "*.${SECRET_DOMAIN}"
+  issuerRef:
+    group: adcs.certmanager.csf.nokia.com
+    kind: ClusterAdcsIssuer
+    name: adcs-cluster-issuer
+  subject:
+    organizations:
+      - "${SECRET_ORGANIZATION}"
+  secretName: "${SECRET_DOMAIN/./-}-ad-production-tls"
