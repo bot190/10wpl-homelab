@@ -96,6 +96,14 @@ spec:
             path: /warehouse/media/music
             server: ${NFS_SERVER}
         mountPath: /music
+      books:
+        enabled: true
+        type: custom
+        volumeSpec:
+          nfs:
+            path: /warehouse/media/books
+            server: ${NFS_SERVER}
+        mountPath: /books
     ingress:
       main:
         enabled: true

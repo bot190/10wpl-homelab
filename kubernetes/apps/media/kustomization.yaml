@@ -6,6 +6,7 @@ resources:
   - ./tautulli/ks.yaml
   - ./nzbhydra/ks.yaml
   - ./radarr/ks.yaml
+  - ./readarr/ks.yaml
   - ./sonarr/ks.yaml
   - ./lidarr/ks.yaml
   - ./sabnzbd/ks.yaml

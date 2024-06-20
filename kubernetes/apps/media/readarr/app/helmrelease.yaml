@@ -1,0 +1,94 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app readarr
+  namespace: media
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+      interval: 15m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    controllers:
+      readarr:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/onedr0p/readarr-develop
+              tag: 0.3.28.2554@sha256:4beda7d63d2cb014a860bf4f8fa367f9621e378675396b684d300f1e3a0380dc
+            env:
+              TZ: "${TIMEZONE}"
+              READARR__SERVER__PORT: &port 8787
+            # probes:
+            #   liveness: &probes
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       httpGet:
+            #         path: /ping
+            #         port: *port
+            #       initialDelaySeconds: 0
+            #       periodSeconds: 10
+            #       timeoutSeconds: 1
+            #       failureThreshold: 3
+            #   readiness: *probes
+    defaultPodOptions:
+      hostname: *app
+      securityContext:
+        runAsUser: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
+        runAsGroup: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
+    service:
+      app:
+        controller: readarr
+        ports:
+          http:
+            port: *port
+    ingress:
+      app:
+        enabled: true
+        className: nginx
+        annotations:
+          hajimari.io/icon: mdi:movie
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      config:
+        enabled: true
+        storageClass: zfs-nfs
+        globalMounts:
+          - path: /config
+        size: 10Gi
+        accessMode: ReadWriteOnce
+      books:
+        enabled: true
+        type: custom
+        volumeSpec:
+          nfs:
+            path: "/warehouse/media/books"
+            server: "${NFS_SERVER}"
+        globalMounts:
+          - path: /books
