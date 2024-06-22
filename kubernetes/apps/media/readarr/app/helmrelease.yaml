@@ -63,7 +63,7 @@ spec:
         enabled: true
         className: nginx
         annotations:
-          hajimari.io/icon: mdi:movie
+          hajimari.io/icon: mdi:book
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
