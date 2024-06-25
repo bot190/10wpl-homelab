@@ -26,6 +26,16 @@ spec:
   values:
     controllers:
       readarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &envFrom
+              - secretRef:
+                  name: readarr-secret
         containers:
           app:
             image:
@@ -33,7 +43,13 @@ spec:
               tag: 0.3.28.2554@sha256:4beda7d63d2cb014a860bf4f8fa367f9621e378675396b684d300f1e3a0380dc
             env:
               TZ: "${TIMEZONE}"
+              READARR__APP__INSTANCENAME: Readarr
+              READARR__APP__THEME: dark
+              READARR__AUTH__METHOD: External
+              READARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              READARR__LOG__LEVEL: info
               READARR__SERVER__PORT: &port 8787
+            envFrom: *envFrom
             # probes:
             #   liveness: &probes
             #     enabled: true
