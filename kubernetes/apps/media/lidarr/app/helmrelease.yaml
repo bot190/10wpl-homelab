@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,38 +23,60 @@ spec:
     remediation:
       retries: 5
   values:
-    image:
-      repository: ghcr.io/onedr0p/lidarr
-      tag: 2.3.3.4204@sha256:6e097b835ea63ff43f6496668ba5c7ee6e5d3aff36a85c59e391cc7d8f43e05f
-    env:
-      TZ: "${TIMEZONE}"
-    hostname: *app
+    controllers:
+      lidarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &envFrom
+              - secretRef:
+                  name: lidarr-secret
+        containers:
+          app:
+            image:
+              repository: ghcr.io/onedr0p/lidarr
+              tag: 2.3.3.4204@sha256:6e097b835ea63ff43f6496668ba5c7ee6e5d3aff36a85c59e391cc7d8f43e05f
+            env:
+              TZ: "${TIMEZONE}"
+              LIDARR__APP__INSTANCENAME: Lidarr
+              LIDARR__APP__THEME: dark
+              LIDARR__AUTH__METHOD: External
+              LIDARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              LIDARR__LOG__LEVEL: info
+              LIDARR__SERVER__PORT: &port 8686
+            envFrom: *envFrom
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+    defaultPodOptions:
+      hostname: *app
+      securityContext:
+        runAsUser: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
+        runAsGroup: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
     service:
-      main:
+      app:
+        controller: lidarr
         ports:
           http:
-            port: 8686
-    podSecurityContext:
-      runAsUser: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
-      runAsGroup: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
-    persistence:
-      config:
-        enabled: true
-        storageClass: zfs-nfs
-        mountPath: /config
-        size: 50Gi
-      movies:
-        enabled: true
-        type: custom
-        volumeSpec:
-          nfs:
-            path: "/warehouse/media/music"
-            server: "${NFS_SERVER}"
-        mountPath: /music
+            port: *port
     ingress:
-      main:
+      app:
         enabled: true
-        ingressClassName: nginx
+        className: nginx
         annotations:
           hajimari.io/icon: mdi:music
         hosts:
@@ -62,6 +84,26 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
         tls:
           - hosts:
               - *host
+    persistence:
+      config:
+        enabled: true
+        storageClass: zfs-nfs
+        globalMounts:
+          - path: /config
+        size: 50Gi
+        accessMode: ReadWriteOnce
+      movies:
+        enabled: true
+        type: custom
+        volumeSpec:
+          nfs:
+            path: "/warehouse/media/music"
+            server: "${NFS_SERVER}"
+        globalMounts:
+          - path: /music
