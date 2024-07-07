@@ -4,3 +4,4 @@ kind: Kustomization
 namespace: open-ebs
 resources:
   - ./lvm-class.yaml
+  - ./service-monitor.yaml
