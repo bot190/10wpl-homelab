@@ -7,4 +7,5 @@ resources:
   - ./echo-server/ks.yaml
   - ./hajimari/ks.yaml
   - ./mosquitto/ks.yaml
+  - ./minio/ks.yaml
   - ./frigate/ks.yaml
