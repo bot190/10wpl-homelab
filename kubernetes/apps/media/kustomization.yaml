@@ -8,6 +8,7 @@ resources:
   - ./radarr/ks.yaml
   - ./readarr/ks.yaml
   - ./sonarr/ks.yaml
+  - ./stump/ks.yaml
   - ./lidarr/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./plex/ks.yaml
