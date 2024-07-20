@@ -51,7 +51,7 @@ spec:
             port: 9798
     serviceMonitor:
       app:
-        serviceName: app
+        serviceName: speedtest-exporter
         enabled: true
         endpoints:
           - port: http
