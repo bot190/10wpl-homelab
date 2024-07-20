@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -29,50 +29,65 @@ spec:
     - name: mosquitto
       namespace: default
   values:
-    controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/blakeblackshear/frigate
-      tag: 0.13.2
-    env:
-      TZ: "${TIMEZONE}"
-    hostname: *app
-    envFrom:
-      - secretRef:
-          name: frigate-secret
+    controllers:
+      frigate:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/blakeblackshear/frigate
+              tag: 0.13.2
+            env:
+              TZ: "${TIMEZONE}"
+            envFrom:
+              - secretRef:
+                  name: frigate-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/version
+                    port: &port 5000
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 3
+                memory: 1000Mi
+              limits:
+                memory: 6000Mi
+    defaultPodOptions:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values: ["plex"]
+              topologyKey: kubernetes.io/hostname
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
-            port: &port 5000
+            port: *port
           rtsp:
             enabled: true
             port: 8554
-    # podSecurityContext:
-    #   runAsUser: "${SECURITY_CONTEXT_RUN_AS_USER}"
-    #   runAsGroup: "${SECURITY_CONTEXT_RUN_AS_GROUP}"
-    #   fsGroupChangePolicy: "Always"
-    probes:
-      liveness: &probes
-        enabled: true
-        custom: true
-        spec:
-          httpGet:
-            path: /api/version
-            port: *port
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-      readiness: *probes
-      startup:
-        enabled: false
     ingress:
-      main:
+      app:
         enabled: true
-        ingressClassName: nginx
+        className: nginx
         annotations:
           hajimari.io/icon: mdi:cctv
         hosts:
@@ -80,6 +95,9 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
         tls:
           - hosts:
               - *host
@@ -87,8 +105,10 @@ spec:
       config:
         enabled: true
         storageClass: zfs-nfs
-        mountPath: /data
+        globalMounts:
+          - path: /data
         size: 5Gi
+        accessMode: ReadWriteOnce
       media:
         enabled: true
         type: custom
@@ -96,32 +116,20 @@ spec:
           nfs:
             path: "/warehouse/services/nvr"
             server: "${NFS_SERVER}"
-        mountPath: /media
+        globalMounts:
+          - path: /media
       config-file:
         enabled: true
         type: configMap
         name: frigate-configmap
-        subPath: config.yml
-        mountPath: /config/config.yml
-        readOnly: true
+        globalMounts:
+          - path: /config/config.yml
+            subPath: config.yml
+            readOnly: true
       cache:
         enabled: true
         type: emptyDir
         medium: Memory
         sizeLimit: 4Gi
-        mountPath: /dev/shm
-    affinity:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-                - key: app.kubernetes.io/name
-                  operator: In
-                  values: ["plex"]
-            topologyKey: kubernetes.io/hostname
-    resources:
-      requests:
-        cpu: 3
-        memory: 1000Mi
-      limits:
-        memory: 6000Mi
+        globalMounts:
+          - path: /dev/shm
