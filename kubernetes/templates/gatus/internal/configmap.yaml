@@ -14,5 +14,7 @@ data:
         interval: 1m
         conditions:
           - "[STATUS] == ${GATUS_STATUS:-200}"
+        client:
+          insecure: true
         alerts:
           - type: pushover
