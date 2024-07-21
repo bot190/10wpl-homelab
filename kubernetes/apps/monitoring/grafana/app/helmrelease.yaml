@@ -26,6 +26,12 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    extraInitContainers:
+      - name: init-db
+        image: ghcr.io/onedr0p/postgres-init:16
+        envFrom:
+          - secretRef:
+              name: &secret grafana-admin-secret
     podAnnotations:
       secret.reloader.stakater.com/reload: grafana-admin-secret
     admin:
@@ -33,6 +39,8 @@ spec:
     env:
       GF_EXPLORE_ENABLED: true
       GF_SERVER_ROOT_URL: "https://grafana.${SECRET_DOMAIN}"
+    envFromSecrets:
+      - name: *secret
     grafana.ini:
       analytics:
         check_for_updates: false
@@ -115,7 +123,7 @@ spec:
     initChownData:
       enabled: false
     persistence:
-      enabled: true
+      enabled: false
       storageClassName: zfs-nfs
     testFramework:
       enabled: false
