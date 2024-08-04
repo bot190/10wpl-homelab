@@ -1,0 +1,78 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "10wpl-gatus"
+  labels:
+    gatus.io/enabled: "true"
+data:
+  config.yaml: |
+    endpoints:
+      - name: "Router"
+        group: 10WPL-Infrastructure
+        url: "https://helgrind.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[STATUS] == ${GATUS_STATUS:-200}"
+        client:
+          insecure: true
+        alerts:
+          - type: pushover
+      - name: "Storage"
+        group: 10WPL-Infrastructure
+        url: "icmp://svellhjall.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "DC-1"
+        group: 10WPL-Infrastructure
+        url: "icmp://10wpl-dc1.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "DC-2"
+        group: 10WPL-Infrastructure
+        url: "icmp://10wpl-dc2.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "Ingeitum"
+        group: 10WPL-Infrastructure
+        url: "https://ingeitum.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[STATUS] == ${GATUS_STATUS:-200}"
+        client:
+          insecure: true
+        alerts:
+          - type: pushover
+      - name: "UMR Switch"
+        group: 10WPL-Infrastructure
+        url: "icmp://10wpl_umr_sw0.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "Lab Switch"
+        group: 10WPL-Infrastructure
+        url: "icmp://10wpl-lab-sw0.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "WAP"
+        group: 10WPL-Infrastructure
+        url: "icmp://10wpl-wap.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
