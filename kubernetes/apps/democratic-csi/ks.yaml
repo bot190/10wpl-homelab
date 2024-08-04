@@ -1,12 +1,17 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-zfs-nfs
+  name: &app cluster-apps-zfs-nfs
   namespace: flux-system
 spec:
+  targetNamespace: democratic-csi
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/democratic-csi/zfs-nfs
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: home-kubernetes

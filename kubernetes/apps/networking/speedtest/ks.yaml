@@ -1,17 +1,21 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.haraldkoch.ca/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: networking-speedtest
+  name: &app networking-speedtest
   namespace: flux-system
 spec:
+  targetNamespace: networking
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/networking/speedtest/app
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
   wait: true
   interval: 30m
   retryInterval: 1m
-  timeout: 3m
+  timeout: 5m
