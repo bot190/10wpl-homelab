@@ -1,0 +1,68 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "cbr-gatus"
+  labels:
+    gatus.io/enabled: "true"
+data:
+  config.yaml: |
+    endpoints:
+      - name: "Router"
+        group: CBR-Infrastructure
+        url: "https://cbr-firewall.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[STATUS] == ${GATUS_STATUS:-200}"
+        client:
+          insecure: true
+        alerts:
+          - type: pushover
+      - name: "Storage"
+        group: CBR-Infrastructure
+        url: "icmp://storage1.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "Switch"
+        group: CBR-Infrastructure
+        url: "icmp://cbr-sw01-master.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "HP Proxmox"
+        group: CBR-Infrastructure
+        url: "icmp://cbr-proxmox-0.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "Dell ESXi"
+        group: CBR-Infrastructure
+        url: "icmp://cbr-esxi-0.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "WAP"
+        group: CBR-Infrastructure
+        url: "icmp://cbr-wap.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "DC-2"
+        group: CBR-Infrastructure
+        url: "icmp://cbr-dc2.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover

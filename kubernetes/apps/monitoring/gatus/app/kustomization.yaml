@@ -9,6 +9,7 @@ resources:
   - ./helmrelease.yaml
   - ./resources/10wpl-config.yaml
   - ./resources/40mck-config.yaml
+  - ./resources/cbr-config.yaml
 configMapGenerator:
   - name: gatus-configmap
     files:
