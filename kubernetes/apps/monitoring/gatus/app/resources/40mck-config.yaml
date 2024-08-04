@@ -1,0 +1,68 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "40mck-gatus"
+  labels:
+    gatus.io/enabled: "true"
+data:
+  config.yaml: |
+    endpoints:
+      - name: "Router"
+        group: 40MCK-Infrastructure
+        url: "https://40mck-firewall1.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[STATUS] == ${GATUS_STATUS:-200}"
+        client:
+          insecure: true
+        alerts:
+          - type: pushover
+      - name: "Storage"
+        group: 40MCK-Infrastructure
+        url: "icmp://40mck-storage-1.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "Switch"
+        group: 40MCK-Infrastructure
+        url: "icmp://40mck-switch-0.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "WAP"
+        group: 40MCK-Infrastructure
+        url: "icmp://40mck-wap-0.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "Router Proxmox"
+        group: 40MCK-Infrastructure
+        url: "icmp://40mck-proxmox-0.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "Proxmox 1"
+        group: 40MCK-Infrastructure
+        url: "icmp://40mck-proxmox-1.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
+      - name: "DC-1"
+        group: 40MCK-Infrastructure
+        url: "icmp://40mck-dc1.${INTERNAL_DOMAIN}"
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: pushover
