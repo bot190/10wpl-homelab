@@ -9,7 +9,7 @@ reclaimPolicy: Delete
 
 parameters:
   storage: "lvm"
-  vgpattern: "ebsvg"
+  vgpattern: "ebsvg|10wpl-k8s-worker-[0-9]+-vg"
   thinProvision: "yes"
 
 provisioner: local.csi.openebs.io
