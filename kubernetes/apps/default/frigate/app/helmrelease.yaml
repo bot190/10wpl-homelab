@@ -28,6 +28,8 @@ spec:
   dependsOn:
     - name: mosquitto
       namespace: default
+    - name: intel-device-plugin-gpu
+      namespace: kube-system
   values:
     controllers:
       frigate:
@@ -64,8 +66,14 @@ spec:
                 cpu: 3
                 memory: 1000Mi
               limits:
+                gpu.intel.com/i915: 1
                 memory: 6000Mi
+            securityContext:
+              privileged: true
     defaultPodOptions:
+      nodeSelector:
+        intel.feature.node.kubernetes.io/gpu: "true"
+        feature.node.kubernetes.io/coral: "true"
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -75,6 +83,7 @@ spec:
                     operator: In
                     values: ["plex"]
               topologyKey: kubernetes.io/hostname
+
     service:
       app:
         controller: *app
@@ -130,6 +139,12 @@ spec:
         enabled: true
         type: emptyDir
         medium: Memory
-        sizeLimit: 4Gi
+        sizeLimit: 1Gi
         globalMounts:
           - path: /dev/shm
+      coral:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/apex_0
+        globalMounts:
+          - path: /dev/apex_0
