@@ -49,3 +49,5 @@ spec:
         cpu: 500m
       limits:
         memory: 3000Mi
+    pdb:
+      enabled: false

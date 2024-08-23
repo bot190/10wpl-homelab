@@ -50,3 +50,5 @@ spec:
     metrics:
       health:
         enabled: true
+    pdb:
+      enabled: false
