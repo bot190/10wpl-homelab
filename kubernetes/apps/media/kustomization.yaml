@@ -5,6 +5,7 @@ resources:
   - ./namespace.yaml
   - ./tautulli/ks.yaml
   - ./nzbhydra/ks.yaml
+  - ./prowlarr/ks.yaml
   - ./radarr/ks.yaml
   - ./readarr/ks.yaml
   - ./sonarr/ks.yaml
