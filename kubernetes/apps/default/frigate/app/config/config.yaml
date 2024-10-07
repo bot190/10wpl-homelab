@@ -80,6 +80,8 @@ cameras:
       width: 704
       height: 480
       fps: 10
+    motion:
+      mask: "0.732,0.038,0.731,0.086,0.975,0.082,0.974,0.036"
 
   frigate_driveway_back:
     ffmpeg:
@@ -144,5 +146,3 @@ cameras:
       width: 704
       height: 480
       fps: 10
-    motion:
-      mask: "0.732,0.038,0.731,0.086,0.975,0.082,0.974,0.036"
