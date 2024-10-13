@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -9,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.5.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,75 +24,89 @@ spec:
     remediation:
       retries: 5
   values:
-    image:
-      repository: ghcr.io/onedr0p/plex
-      tag: 1.32.4.7195-7c8f9d3b6@sha256:39c4ad71d92790d54b2d14be5fdabca940591ab2b9f8291d02653cd4f80d9d4f
-    env:
-      TZ: "${TIMEZONE}"
-    hostname: *app
+    controllers:
+      plex:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/onedr0p/plex
+              tag: 1.32.4.7195-7c8f9d3b6@sha256:39c4ad71d92790d54b2d14be5fdabca940591ab2b9f8291d02653cd4f80d9d4f
+            env:
+              TZ: "${TIMEZONE}"
+            resources:
+              requests:
+                cpu: 4
+              limits:
+                gpu.intel.com/i915: 1
+                memory: 16Gi
     service:
-      main:
+      app:
+        controller: plex
+        type: LoadBalancer
         ports:
           http:
             port: 32400
-    podSecurityContext:
-      runAsUser: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
-      runAsGroup: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
+    defaultPodOptions:
+      hostname: *app
+      securityContext:
+        runAsUser: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
+        runAsGroup: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
+      nodeSelector:
+        intel.feature.node.kubernetes.io/gpu: "true"
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values: ["frigate"]
+              topologyKey: kubernetes.io/hostname
     persistence:
       config:
         enabled: true
         type: hostPath
-        accessMode: ReadWriteOnce
         hostPath: /data/plex
         hostPathType: DirectoryOrCreate
-        size: 10Gi
-      metadata:
-        enabled: true
-        storageClass: zfs-nfs
-        accessMode: ReadWriteOnce
-        mountPath: /metadata
-        size: 400Gi
       tv:
         enabled: true
         type: custom
         volumeSpec:
           nfs:
-            path: /warehouse/media/tv
-            server: ${NFS_SERVER}
-        mountPath: /tv
+            path: "/warehouse/media/tv"
+            server: "${NFS_SERVER}"
+        globalMounts:
+          - path: /tv
       movies:
         enabled: true
         type: custom
         volumeSpec:
           nfs:
-            path: /warehouse/media/movies
-            server: ${NFS_SERVER}
-        mountPath: /movies
+            path: "/warehouse/media/movies"
+            server: "${NFS_SERVER}"
+        globalMounts:
+          - path: /movies
       music:
         enabled: true
         type: custom
         volumeSpec:
           nfs:
-            path: /warehouse/media/music
-            server: ${NFS_SERVER}
-        mountPath: /music
+            path: "/warehouse/media/music"
+            server: "${NFS_SERVER}"
+        globalMounts:
+          - path: /music
+      tmp:
+        type: emptyDir
       transcode:
-        enabled: true
-        type: hostPath
-        accessMode: ReadWriteOnce
-        hostPath: /data/transcode
-        hostPathType: DirectoryOrCreate
-        size: 20Gi
+        type: emptyDir
     nodeSelector:
       fusionIO: "true"
-    tolerations:
-      - key: "fusionIO"
-        operator: "Exists"
-        effect: "PreferNoSchedule"
     ingress:
-      main:
+      app:
         enabled: true
-        ingressClassName: nginx
+        className: nginx
         annotations:
           hajimari.io/icon: mdi:plex
           nginx.ingress.kubernetes.io/app-root: /web
@@ -100,6 +115,9 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
         tls:
           - hosts:
               - *host
