@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-metallb
+  name: &app metallb
   namespace: flux-system
 spec:
   targetNamespace: networking
@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/networking/metallb/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -19,12 +19,15 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-metallb-config
+  name: &app metallb-config
   namespace: flux-system
 spec:
   targetNamespace: networking
@@ -32,9 +35,9 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: cluster-apps-metallb
+    - name: metallb
   path: ./kubernetes/apps/networking/metallb/config
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -42,3 +45,6 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app

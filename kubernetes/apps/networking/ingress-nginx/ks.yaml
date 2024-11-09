@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-ingress-nginx-certificates
+  name: &app ingress-nginx-certificates
   namespace: flux-system
 spec:
   targetNamespace: networking
@@ -11,9 +11,9 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: cluster-apps-cert-manager-issuers
+    - name: cert-manager-issuers
   path: ./kubernetes/apps/networking/ingress-nginx/certificates
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -21,12 +21,15 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-ingress-nginx
+  name: &app ingress-nginx
   namespace: flux-system
 spec:
   targetNamespace: networking
@@ -34,10 +37,10 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: cluster-apps-ingress-nginx-certificates
-    - name: cluster-apps-metallb-config
+    - name: ingress-nginx-certificates
+    - name: metallb-config
   path: ./kubernetes/apps/networking/ingress-nginx/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -45,3 +48,6 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app

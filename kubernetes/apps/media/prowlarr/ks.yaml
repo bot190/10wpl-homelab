@@ -13,7 +13,7 @@ spec:
   path: ./kubernetes/apps/media/prowlarr/app
   dependsOn:
     - name: cloudnative-pg-cluster
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes

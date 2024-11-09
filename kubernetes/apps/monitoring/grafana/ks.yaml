@@ -13,7 +13,7 @@ spec:
   dependsOn:
     - name: cloudnative-pg-cluster
   path: ./kubernetes/apps/monitoring/grafana/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
