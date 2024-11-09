@@ -7,3 +7,4 @@ resources:
   - ./helmrelease.yaml
   - ./influxdb-pvc.yaml
   - ./grafana.sops.yaml
+  - ./gatus.yaml
