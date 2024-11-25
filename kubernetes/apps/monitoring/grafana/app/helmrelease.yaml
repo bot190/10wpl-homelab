@@ -81,6 +81,11 @@ spec:
         flux-control-plane:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
           datasource: Prometheus
+        dragonfly-dashboard:
+          url: https://raw.githubusercontent.com/dragonflydb/dragonfly-operator/refs/heads/main/monitoring/grafana-dashboard.json
+          datasource:
+            - name: DS_PROMETHEUS
+              value: Prometheus
         speedtest-exporter-hub:
           gnetId: 16541
           revision: 1
