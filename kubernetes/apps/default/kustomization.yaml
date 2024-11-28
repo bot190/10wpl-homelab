@@ -8,4 +8,5 @@ resources:
   - ./hajimari/ks.yaml
   - ./mosquitto/ks.yaml
   - ./minio/ks.yaml
+  - ./netbox/ks.yaml
   - ./frigate/ks.yaml
