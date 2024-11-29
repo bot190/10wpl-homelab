@@ -1,0 +1,138 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: netbox
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: netbox
+      version: 5.0.0-beta.148
+      sourceRef:
+        kind: HelmRepository
+        name: netbox
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  valuesFrom:
+    - targetPath: storageConfig.AWS_ACCESS_KEY_ID
+      kind: Secret
+      name: netbox-s3-secret
+      valuesKey: AWS_ACCESS_KEY_ID
+    - targetPath: storageConfig.AWS_SECRET_ACCESS_KEY
+      kind: Secret
+      name: netbox-s3-secret
+      valuesKey: AWS_SECRET_ACCESS_KEY
+
+    - targetPath: externalDatabase.host
+      kind: Secret
+      name: netbox-database
+      valuesKey: INIT_POSTGRES_HOST
+    - targetPath: externalDatabase.database
+      kind: Secret
+      name: netbox-database
+      valuesKey: INIT_POSTGRES_DBNAME
+    - targetPath: externalDatabase.username
+      kind: Secret
+      name: netbox-database
+      valuesKey: INIT_POSTGRES_USER
+
+    # - targetPath: remoteAuth.ldap
+    #   kind: Secret
+    #   name: netbox-database
+    #   valuesKey: LOGIN
+
+  # Create postgres database and user
+  values:
+    initContainers:
+      - name: init-db
+        image: ghcr.io/onedr0p/postgres-init:16
+        envFrom:
+          - secretRef:
+              name: netbox-database
+
+    superuser:
+      username: admin
+      email: admin@${INTERNAL_DOMAIN}
+      externalSecret: netbox-secret
+
+    csrf:
+      cookieName: csrftoken
+      trustedOrigins:
+        - https://netbox.${SECRET_DOMAIN}
+
+    storageBackend: storages.backends.s3boto3.S3Boto3Storage
+    storageConfig:
+      AWS_STORAGE_BUCKET_NAME: "netbox"
+      AWS_S3_ENDPOINT_URL: "http://minio.default.svc.cluster.local:9000"
+      AWS_S3_REGION_NAME: "us-east-1"
+
+    existingSecret: netbox-secret
+
+    metricsEnabled: true
+
+    postgresql:
+      enabled: false
+    externalDatabase:
+      port: 5432
+      existingSecretName: "netbox-database"
+      existingSecretKey: INIT_POSTGRES_PASS
+
+    redis:
+      enabled: false
+    tasksRedis:
+      database: 0
+
+      host: dragonfly.dragonfly.svc.cluster.local
+      port: 6379
+      username: ""
+
+      # existingSecretName: netbox-redis-secret
+      # existingSecretKey: password
+
+    cachingRedis:
+      database: 1
+
+      host: dragonfly.dragonfly.svc.cluster.local
+      port: 6379
+      username: ""
+
+      # existingSecretName: netbox-redis-secret
+      # existingSecretKey: password
+
+    persistence:
+      enabled: false
+    reportsPersistence:
+      enabled: false
+
+    podAnnotations:
+      secret.reloader.stakater.com/reload: "netbox-database,netbox-s3-secret"
+      config.reloader.stakater.com/reload: netbox
+
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        hajimari.io/icon: mdi:database-import
+      hosts:
+        - host: "netbox.${SECRET_DOMAIN}"
+          paths:
+            - /
+
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: netbox
+                app.kubernetes.io/name: netbox
+                app.kubernetes.io/component: netbox
+            topologyKey: kubernetes.io/hostname
