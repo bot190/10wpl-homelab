@@ -45,11 +45,6 @@ spec:
       name: netbox-database
       valuesKey: INIT_POSTGRES_USER
 
-    # - targetPath: remoteAuth.ldap
-    #   kind: Secret
-    #   name: netbox-database
-    #   valuesKey: LOGIN
-
   # Create postgres database and user
   values:
     initContainers:
@@ -59,10 +54,85 @@ spec:
           - secretRef:
               name: netbox-database
 
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 5
+      successThreshold: 1
+
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 0
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 5
+      successThreshold: 1
+
+    startupProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 10
+      successThreshold: 1
+
     superuser:
       username: admin
       email: admin@${INTERNAL_DOMAIN}
       externalSecret: netbox-secret
+
+    remoteAuth:
+      enabled: true
+      backends:
+        - netbox.authentication.LDAPBackend
+      ldap:
+        serverUri: "ldap://${LDAP_SERVER}:389"
+        startTls: false
+        ignoreCertErrors: true
+        caCertData: ""
+        bindDn: "CN=netbox,OU=Services,OU=Service Access,${SECRET_DOMAIN_DN}"
+        userDnTemplate: null
+        userSearchBaseDn: "OU=Locations,${SECRET_DOMAIN_DN}"
+        userSearchAttr: "sAMAccountName"
+        groupSearchBaseDn: "${SECRET_DOMAIN_DN}"
+        groupSearchClass: "group"
+        groupType: "NestedGroupOfNamesType"
+        requireGroupDn:
+          - "CN=NetworkAdmins,OU=Locations,${SECRET_DOMAIN_DN}"
+        isAdminDn:
+          - "CN=NetworkAdmins,OU=Locations,${SECRET_DOMAIN_DN}"
+        isSuperUserDn:
+          - "CN=NetworkAdmins,OU=Locations,${SECRET_DOMAIN_DN}"
+        findGroupPerms: true
+        mirrorGroups: true
+        mirrorGroupsExcept: null
+        cacheTimeout: 5
+        attrFirstName: "givenName"
+        attrLastName: "sn"
+        attrMail: "mail"
+
+    logging:
+      version: 1
+      disable_existing_loggers: False
+
+      handlers:
+        console:
+          class: "logging.StreamHandler"
+
+      loggers:
+        django_auth_ldap:
+          handlers: ["console"]
+          level: INFO
+
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 2
+        memory: 2Gi
 
     csrf:
       cookieName: csrftoken
@@ -121,7 +191,7 @@ spec:
       enabled: true
       className: nginx
       annotations:
-        hajimari.io/icon: mdi:database-import
+        hajimari.io/icon: netbox.default.svc.cluster.local/static/logo_netbox_bright_teal.svg
       hosts:
         - host: "netbox.${SECRET_DOMAIN}"
           paths:
