@@ -83,7 +83,7 @@
             dest: "/etc/modules-load.d/{{ item }}.conf"
             mode: "0644"
             content: "{{ item }}"
-          loop: ["br_netfilter", "ceph", "ip_vs", "ip_vs_rr", "nbd", "overlay", "rbd"]
+          loop: ["br_netfilter", "ceph", "ip_vs", "ip_vs_rr", "nbd", "overlay", "rbd", "dm_thin_pool"]
         - name: System Configuration | Sysctl
           ansible.posix.sysctl:
             name: "{{ item.key }}"
