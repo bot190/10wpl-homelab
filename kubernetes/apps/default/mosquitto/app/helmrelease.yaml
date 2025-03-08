@@ -35,7 +35,7 @@ spec:
           01-init-config:
             image:
               repository: public.ecr.aws/docker/library/eclipse-mosquitto
-              tag: 2.0.20
+              tag: 2.0.21
               pullPolicy: IfNotPresent
             command: ["/bin/sh", "-c"]
             args:
@@ -46,7 +46,7 @@ spec:
           app:
             image:
               repository: public.ecr.aws/docker/library/eclipse-mosquitto
-              tag: 2.0.20
+              tag: 2.0.21
     defaultPodOptions:
       hostname: *app
       securityContext:
