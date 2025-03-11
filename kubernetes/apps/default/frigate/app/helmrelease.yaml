@@ -15,14 +15,14 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 2
+  maxHistory: 10
   install:
     remediation:
       retries: 3
   upgrade:
-    cleanupOnFail: true
+    cleanupOnFail: false
     remediation:
-      retries: 3
+      retries: 10
   uninstall:
     keepHistory: false
   dependsOn:
