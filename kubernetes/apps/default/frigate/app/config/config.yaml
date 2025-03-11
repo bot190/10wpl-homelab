@@ -13,6 +13,9 @@ mqtt:
 database:
   path: /data/frigate.db
 
+auth:
+  enabled: false
+
 ffmpeg:
   global_args: ["-hide_banner", "-loglevel", "warning"]
   hwaccel_args: preset-vaapi
@@ -35,7 +38,7 @@ record:
   retain:
     days: 2
     mode: all
-  events:
+  detections:
     retain:
       default: 30
       mode: active_objects
@@ -50,6 +53,13 @@ objects:
 
 birdseye:
   restream: true
+  width: 1920
+  height: 1080
+  mode: motion
+
+semantic_search:
+  enabled: true
+  reindex: true
 
 go2rtc:
   streams:
