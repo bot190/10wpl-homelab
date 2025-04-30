@@ -104,6 +104,8 @@ cameras:
         - path: rtsp://localhost:8554/frigate_driveway_back_hq
           roles:
             - record
+    live:
+      stream_name: frigate_driveway_back_hq
     detect:
       width: 704
       height: 480
@@ -154,6 +156,8 @@ cameras:
         - path: rtsp://localhost:8554/frigate_mailbox_hq
           roles:
             - record
+    live:
+      stream_name: frigate_mailbox_hq
     detect:
       width: 704
       height: 480
@@ -168,6 +172,8 @@ cameras:
         - path: rtsp://localhost:8554/frigate_garage_hq
           roles:
             - record
+    live:
+      stream_name: frigate_garage_hq
     detect:
       width: 640
       height: 480
