@@ -38,6 +38,10 @@ record:
   retain:
     days: 2
     mode: all
+  alerts:
+    retain:
+      days: 30
+      mode: active_objects
   detections:
     retain:
       days: 30
@@ -59,7 +63,7 @@ birdseye:
 
 semantic_search:
   enabled: true
-  reindex: true
+  reindex: false
 
 go2rtc:
   streams:
