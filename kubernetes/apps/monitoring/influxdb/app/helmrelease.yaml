@@ -17,7 +17,7 @@ spec:
   values:
     image:
       repository: "influxdb"
-      tag: "2.7.11"
+      tag: "2.7.12"
     adminUser:
       organization: ${INTERNAL_DOMAIN}
       bucket: default
