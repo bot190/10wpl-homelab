@@ -46,13 +46,19 @@ spec:
 
     controller:
       driver:
-        image: ghcr.io/democratic-csi/democratic-csi:v1.9.3
+        image:
+          registry: ghcr.io/democratic-csi/democratic-csi
+          tag: v1.9.3
 
       externalAttacher:
-        image: registry.k8s.io/sig-storage/csi-attacher:v4.8.1
+        image:
+          registry: registry.k8s.io/sig-storage/csi-attacher
+          tag: v4.8.1
 
       externalProvisioner:
-        image: registry.k8s.io/sig-storage/csi-provisioner:v5.2.0
+        image:
+          registry: registry.k8s.io/sig-storage/csi-provisioner
+          tag: v5.2.0
         # copied from default values; overriding timeout from 90s to 180s
         args:
           - --v=5
@@ -64,10 +70,14 @@ spec:
           - --csi-address=/csi-data/csi.sock
 
       externalResizer:
-        image: registry.k8s.io/sig-storage/csi-resizer:v1.13.2
+        image:
+          registry: registry.k8s.io/sig-storage/csi-resizer
+          tag: v1.13.2
 
       # externalSnapshotter:
-      #   image: registry.k8s.io/sig-storage/csi-snapshotter:v6.2.1
+      #   image:
+      #       registry: registry.k8s.io/sig-storage/csi-snapshotter
+      #       tag: v6.2.1
 
       podAnnotations:
         secret.reloader.stakater.com/reload: zfs-nfs-secret
@@ -86,10 +96,14 @@ spec:
 
     node:
       driver:
-        image: ghcr.io/democratic-csi/democratic-csi:v1.9.3
+        image:
+          registry: ghcr.io/democratic-csi/democratic-csi
+          tag: v1.9.3
 
       driverRegistrar:
-        image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0
+        image:
+          registry: registry.k8s.io/sig-storage/csi-node-driver-registrar
+          tag: v2.13.0
 
       tolerations:
         - effect: NoSchedule
