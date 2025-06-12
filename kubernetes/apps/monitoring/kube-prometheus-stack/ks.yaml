@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: local-path-provisioner
+    - name: democratic-csi-nfs
   path: ./kubernetes/apps/monitoring/kube-prometheus-stack/app
   prune: true
   sourceRef:
