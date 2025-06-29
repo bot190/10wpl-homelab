@@ -50,6 +50,10 @@ spec:
         allowedTopologgies: "kubernetes.io/hostname,openebs.io/lvmvg,"
     mayastor:
       enabled: false
+    loki:
+      enabled: false
+    alloy:
+      enabled: false
     engines:
       local:
         lvm:
