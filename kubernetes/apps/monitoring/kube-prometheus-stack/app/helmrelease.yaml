@@ -31,7 +31,43 @@ spec:
   values:
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
-      enabled: false
+      enabled: true
+      tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+          operator: Exists
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: "node-role.kubernetes.io/control-plane"
+                    operator: "Exists"
+      ingress:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          hajimari.io/appName: AlertManager
+          hajimari.io/icon: simple-icons:alertmanager
+        pathType: Prefix
+        hosts:
+          - &host "alertmanager.${SECRET_DOMAIN}"
+        tls:
+          - hosts:
+              - *host
+      alertmanagerSpec:
+        alertmanagerConfiguration:
+          name: alertmanager
+          global:
+            resolveTimeout: 5m
+        externalUrl: "https://alertmanager.${SECRET_DOMAIN}"
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: ceph-block
+              resources:
+                requests:
+                  storage: 1Gi
     grafana:
       enabled: false
       forceDeployDashboards: true
