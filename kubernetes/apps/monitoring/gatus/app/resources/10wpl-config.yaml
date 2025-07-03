@@ -26,17 +26,17 @@ data:
           - "[CONNECTED] == true"
         alerts:
           - type: pushover
-      - name: "DC-1"
+      - name: "DC-2"
         group: 10WPL-Infrastructure
-        url: "icmp://10wpl-dc1.${INTERNAL_DOMAIN}"
+        url: "icmp://10wpl-dc2.${INTERNAL_DOMAIN}"
         interval: 1m
         conditions:
           - "[CONNECTED] == true"
         alerts:
           - type: pushover
-      - name: "DC-2"
+      - name: "DC-3"
         group: 10WPL-Infrastructure
-        url: "icmp://10wpl-dc2.${INTERNAL_DOMAIN}"
+        url: "icmp://10wpl-dc3.${INTERNAL_DOMAIN}"
         interval: 1m
         conditions:
           - "[CONNECTED] == true"
