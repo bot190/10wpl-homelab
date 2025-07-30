@@ -34,8 +34,9 @@ spec:
           hajimari.io/icon: mdi:kubernetes
         hosts:
           - "kubernetes.${SECRET_DOMAIN}"
-        tls:
-          secretName: kubernetes-dashboard-tls
+        pathType: Prefix
+        issuer:
+          scope: disabled
       metricsScraper:
         enabled: true
       serviceMonitor:
