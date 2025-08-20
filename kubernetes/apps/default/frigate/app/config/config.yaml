@@ -21,6 +21,9 @@ ffmpeg:
   hwaccel_args: preset-vaapi
   # hwaccel_args: ["-hwaccel", "vaapi", "-hwaccel_device", "/dev/dri/renderD128", "-hwaccel_output_format", "yuv420p"]
 
+detect:
+  enabled: True
+
 detectors:
   coral:
     type: edgetpu
@@ -64,6 +67,13 @@ birdseye:
 semantic_search:
   enabled: true
   reindex: false
+
+face_recognition:
+  enabled: true
+
+lpr:
+  enabled: true
+  device: GPU
 
 go2rtc:
   streams:
