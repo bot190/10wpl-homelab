@@ -21,6 +21,9 @@ ffmpeg:
   hwaccel_args: preset-vaapi
   # hwaccel_args: ["-hwaccel", "vaapi", "-hwaccel_device", "/dev/dri/renderD128", "-hwaccel_output_format", "yuv420p"]
 
+detect:
+  enabled: True
+
 detectors:
   coral:
     type: edgetpu
@@ -65,6 +68,13 @@ semantic_search:
   enabled: true
   reindex: false
 
+face_recognition:
+  enabled: true
+
+lpr:
+  enabled: true
+  device: GPU
+
 go2rtc:
   streams:
     frigate_front_porch_hq: "{FRIGATE_FRONT_PORCH_CAM}/cam/realmonitor?channel=1&subtype=0"
@@ -91,7 +101,8 @@ cameras:
           roles:
             - detect
     live:
-      stream_name: frigate_front_porch_hq
+      streams:
+        Main Stream: frigate_front_porch_hq
     detect:
       width: 704
       height: 480
@@ -109,7 +120,8 @@ cameras:
           roles:
             - record
     live:
-      stream_name: frigate_driveway_back_hq
+      streams:
+        Main Stream: frigate_driveway_back_hq
     detect:
       width: 704
       height: 480
@@ -125,7 +137,8 @@ cameras:
         - path: rtsp://localhost:8554/frigate_driveway_front_lq
           roles: ["detect"]
     live:
-      stream_name: frigate_driveway_front_hq
+      streams:
+        Main Stream: frigate_driveway_front_hq
     detect:
       width: 704
       height: 480
@@ -143,7 +156,8 @@ cameras:
           roles:
             - detect
     live:
-      stream_name: frigate_lean_to_hq
+      streams:
+        Main Stream: frigate_lean_to_hq
     detect:
       width: 704
       height: 480
@@ -161,7 +175,8 @@ cameras:
           roles:
             - record
     live:
-      stream_name: frigate_mailbox_hq
+      streams:
+        Main Stream:: frigate_mailbox_hq
     detect:
       width: 704
       height: 480
@@ -177,7 +192,8 @@ cameras:
           roles:
             - record
     live:
-      stream_name: frigate_garage_hq
+      streams:
+        Main Stream: frigate_garage_hq
     detect:
       width: 640
       height: 480
