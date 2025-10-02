@@ -2,36 +2,6 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: "${SECRET_DOMAIN/./-}-production"
-  namespace: networking
-spec:
-  secretName: "${SECRET_DOMAIN/./-}-production-tls"
-  issuerRef:
-    name: self-signed-production
-    kind: ClusterIssuer
-  commonName: "${SECRET_DOMAIN}"
-  dnsNames:
-    - "${SECRET_DOMAIN}"
-    - "*.${SECRET_DOMAIN}"
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: "${SECRET_DOMAIN/./-}-staging"
-  namespace: networking
-spec:
-  secretName: "${SECRET_DOMAIN/./-}-staging-tls"
-  issuerRef:
-    name: self-signed-staging
-    kind: ClusterIssuer
-  commonName: "${SECRET_DOMAIN}"
-  dnsNames:
-    - "${SECRET_DOMAIN}"
-    - "*.${SECRET_DOMAIN}"
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
   annotations:
   name: "${SECRET_DOMAIN/./-}-ad-production"
   namespace: networking
