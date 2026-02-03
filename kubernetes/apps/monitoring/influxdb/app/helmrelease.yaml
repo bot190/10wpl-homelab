@@ -37,6 +37,18 @@ spec:
       ingressClassName: nginx
       annotations:
         hajimari.io/icon: simple-icons:influxdb
+        gatus.home-operations.com/endpoint: |
+          name: influxdb
+          group: infrastructure
+          url:  https://influxdb.${SECRET_DOMAIN}/health
+          interval: 1m
+          conditions:
+            - "[CONNECTED] == true"
+            - "[STATUS] == 200"
+          client:
+            insecure: true
+          alerts:
+            - type: pushover
       hostname: "influxdb.${SECRET_DOMAIN}"
       tls: false
     persistence:

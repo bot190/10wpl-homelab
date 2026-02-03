@@ -38,15 +38,11 @@ spec:
           init-config:
             dependsOn: init-db
             image:
-              repository: ghcr.io/kiwigrid/k8s-sidecar
-              tag: 2.5.0@sha256:a6b3f707f883108376514489a94d6629109a327b2978e1d826cd104c4ca436df
-            env:
-              FOLDER: /config
-              LABEL: gatus.io/enabled
-              NAMESPACE: ALL
-              RESOURCE: both
-              UNIQUE_FILENAMES: true
-              METHOD: WATCH
+              repository: ghcr.io/home-operations/gatus-sidecar
+              tag: 0.0.12@sha256:83bf82d422e9b0529a8076cb584d557a12158d9d8a4c373b4d27afcb87a17569
+            args:
+              - --enable-ingress
+              - --ingress-class=nginx
             restartPolicy: Always
             resources: &resources
               requests:
@@ -124,9 +120,29 @@ spec:
         tls:
           - hosts:
               - *host
+    rbac:
+      roles:
+        gatus:
+          type: ClusterRole
+          rules:
+            - apiGroups:
+                - "networking.k8s.io"
+              resources:
+                - ingresses
+                - ingressclasses
+              verbs:
+                - get
+                - watch
+                - list
+      bindings:
+        gatus:
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: gatus
+          subjects:
+            - identifier: gatus
     serviceAccount:
-      create: true
-      name: gatus
+      gatus: {}
     persistence:
       config:
         type: emptyDir

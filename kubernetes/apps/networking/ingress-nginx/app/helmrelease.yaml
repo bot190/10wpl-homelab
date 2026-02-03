@@ -50,6 +50,17 @@ spec:
         enabled: true
       ingressClassResource:
         default: true
+        annotations:
+          gatus.home-operations.com/endpoint: |
+            name: "${APP}"
+            group: internal-apps
+            interval: 1m
+            conditions:
+              - "[STATUS] == 200"
+            client:
+              insecure: true
+            alerts:
+              - type: pushover
       config:
         client-header-timeout: 120
         client-body-buffer-size: "100M"
