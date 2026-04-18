@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: docker.io/aaronleopold/stump
-              tag: 0.0.48@sha256:ba0c2cf7a8ee10c416765b1f709ae5c39c5b1904269d506ab5fee6048db91336
+              tag: 0.1.2@sha256:70594ad1e65d62663c47cd2ffb1a6e7367962a6a878889f4c5beeb81387c95d6
             env:
               TZ: "${TIMEZONE}"
               STUMP_CONFIG_DIR: /config
