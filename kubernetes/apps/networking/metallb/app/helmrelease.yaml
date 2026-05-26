@@ -45,3 +45,7 @@ spec:
         - effect: NoSchedule
           key: node-role.kubernetes.io/control-plane
           operator: Exists
+    frr-k8s:
+      prometheus:
+        serviceMonitor:
+          enabled: false
