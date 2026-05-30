@@ -1,0 +1,142 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app forgejo
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: forgejo
+      version: 17.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: forgejo
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    image:
+      rootless: true
+      tag: 15.0.2
+
+    deployment:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      env:
+        - name: TZ
+          value: "${TIMEZONE}"
+
+    service:
+      http:
+        port: 3000
+      ssh:
+        port: 22
+
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        hajimari.io/icon: simple-icons:forgejo
+      hosts:
+        - host: &host "forgejo.${SECRET_DOMAIN}"
+          paths:
+            - path: /
+              pathType: Prefix
+              port: http
+      tls:
+        - hosts:
+            - *host
+
+    persistence:
+      enabled: true
+      storageClass: zfs-nfs
+      size: 20Gi
+      accessModes:
+        - ReadWriteOnce
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 1Gi
+
+    gitea:
+      admin:
+        existingSecret: forgejo-admin-secret
+        email: admin@${INTERNAL_DOMAIN}
+        passwordMode: initialOnlyNoReset
+
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+
+      ldap:
+        - name: "Active Directory"
+          existingSecret: forgejo-ldap-secret
+          securityProtocol: unencrypted
+          host: "${LDAP_SERVER}"
+          port: 389
+          userSearchBase: "OU=Locations,${SECRET_DOMAIN_DN}"
+          userFilter: "(&(objectClass=person)(sAMAccountName=%s)(memberOf=CN=NetworkAdmins,OU=Locations,${SECRET_DOMAIN_DN}))"
+          adminFilter: "(memberOf=CN=NetworkAdmins,OU=Locations,${SECRET_DOMAIN_DN})"
+          emailAttribute: mail
+          usernameAttribute: sAMAccountName
+          firstnameAttribute: givenName
+          surnameAttribute: sn
+          synchronizeUsers: true
+
+      additionalConfigFromEnvs:
+        - name: FORGEJO__DATABASE__PASSWD
+          valueFrom:
+            secretKeyRef:
+              name: forgejo-database-secret
+              key: password
+        - name: FORGEJO__STORAGE__MINIO_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: forgejo-s3-secret
+              key: AWS_ACCESS_KEY_ID
+        - name: FORGEJO__STORAGE__MINIO_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: forgejo-s3-secret
+              key: AWS_SECRET_ACCESS_KEY
+
+      podAnnotations:
+        secret.reloader.stakater.com/reload: "forgejo-admin-secret,forgejo-database-secret,forgejo-ldap-secret,forgejo-s3-secret"
+
+      config:
+        APP_NAME: Forgejo
+        database:
+          DB_TYPE: postgres
+          HOST: postgres16-rw.postgres.svc.cluster.local:5432
+          NAME: forgejo
+          USER: forgejo
+        metrics:
+          ENABLED: true
+        server:
+          DOMAIN: *host
+          ROOT_URL: "https://forgejo.${SECRET_DOMAIN}/"
+          PROTOCOL: http
+          SSH_DOMAIN: *host
+          SSH_PORT: 22
+          SSH_LISTEN_PORT: 2222
+        service:
+          DISABLE_REGISTRATION: true
+          SHOW_REGISTRATION_BUTTON: false
+        storage:
+          STORAGE_TYPE: minio
+          MINIO_ENDPOINT: minio.default.svc.cluster.local:9000
+          MINIO_BUCKET: forgejo
+          MINIO_LOCATION: us-east-1
+          MINIO_USE_SSL: false

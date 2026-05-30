@@ -8,6 +8,7 @@ resources:
   - ./democratic-csi.yaml
   - ./djkormo-adcs-issuer.yaml
   - ./external-dns.yaml
+  - ./forgejo.yaml
   - ./grafana.yaml
   - ./hajimari.yaml
   - ./influxdata-charts.yaml

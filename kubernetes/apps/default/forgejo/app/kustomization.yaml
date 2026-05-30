@@ -3,10 +3,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./cluster16.yaml
-  - ./database-forgejo.yaml
-  - ./gatus.yaml
-  - ./forgejo-secret.sops.yaml
   - ./secret.sops.yaml
-  - ./service.yaml
-  - ./scheduledbackup.yaml
+  - ./helmrelease.yaml
+  - ../../../../templates/gatus/internal
