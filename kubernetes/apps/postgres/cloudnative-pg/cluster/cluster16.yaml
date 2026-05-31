@@ -30,7 +30,11 @@ spec:
     enablePodMonitor: true
     # Ref: https://github.com/cloudnative-pg/cloudnative-pg/issues/2501
     podMonitorMetricRelabelings:
-      - { sourceLabels: ["cluster"], targetLabel: cnpg_cluster, action: replace }
+      - {
+          sourceLabels: ["cluster"],
+          targetLabel: cnpg_cluster,
+          action: replace,
+        }
       - { regex: cluster, action: labeldrop }
   managed:
     roles:
@@ -49,9 +53,9 @@ spec:
         maxParallel: 8
       destinationPath: s3://cloudnative-pg/
       endpointURL: http://minio.default.svc.cluster.local:9000
-      # Note: serverName version needs to be inclemented
+      # Note: serverName version needs to be incremented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres16-v4
+      serverName: &currentCluster postgres16-v5
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -63,7 +67,7 @@ spec:
   # cluster when recovering from an existing cnpg cluster
   bootstrap:
     recovery:
-      source: &previousCluster postgres16-v3
+      source: &previousCluster postgres16-v4
   # Note: externalClusters is needed when recovering from an existing cnpg cluster
   externalClusters:
     - name: *previousCluster
