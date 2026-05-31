@@ -6,5 +6,6 @@ metadata:
   name: node-feature-discovery
   namespace: flux-system
 spec:
+  type: oci
   interval: 2h
   url: oci://registry.k8s.io/nfd/charts/node-feature-discovery
