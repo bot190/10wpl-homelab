@@ -13,7 +13,7 @@ spec:
   dependsOn:
     - name: cert-manager
   path: ./kubernetes/apps/cert-manager/adcs-issuer/app
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -39,7 +39,7 @@ spec:
   dependsOn:
     - name: cert-manager
   path: ./kubernetes/apps/cert-manager/adcs-issuer/issuers
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: home-kubernetes

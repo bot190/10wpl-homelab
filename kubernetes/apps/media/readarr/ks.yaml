@@ -13,7 +13,7 @@ spec:
   path: ./kubernetes/apps/media/readarr/app
   dependsOn:
     - name: cloudnative-pg-cluster
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: home-kubernetes

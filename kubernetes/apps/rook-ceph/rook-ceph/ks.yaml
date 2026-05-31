@@ -32,7 +32,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/rook-ceph/rook-ceph/cluster
-  prune: true # never should be deleted
+  prune: false # never should be deleted
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
