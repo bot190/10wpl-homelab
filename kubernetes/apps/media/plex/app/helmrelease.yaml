@@ -109,6 +109,7 @@ spec:
         size: 100Gi
         globalMounts:
           - path: /config/Library/Application Support/Plex Media Server
+        volumeName: pvc-e536f108-5160-49ae-99d0-4f2171b3f848
       cache:
         enabled: true
         type: persistentVolumeClaim
@@ -117,6 +118,7 @@ spec:
         size: 100Gi
         globalMounts:
           - path: /config/Library/Application Support/Plex Media Server/Cache
+        volumeName: pvc-91b1dae6-692f-4a80-a9ff-8a23ab541ce9
       logs:
         type: emptyDir
         globalMounts:
