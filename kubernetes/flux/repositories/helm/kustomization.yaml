@@ -15,7 +15,7 @@ resources:
   - ./ingress-nginx.yaml
   - ./intel.yaml
   - ./jetstack.yaml
-  - ./kubernetes-dashboard.yaml
+  - ./headlamp.yaml
   - ./metallb.yaml
   - ./metrics-server.yaml
   - ./netbox.yaml

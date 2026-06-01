@@ -6,7 +6,7 @@ resources:
   - ./gatus/ks.yaml
   - ./grafana/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
-  - ./kubernetes-dashboard/ks.yaml
+  - ./headlamp/ks.yaml
   - ./speedtest-exporter/ks.yaml
   - ./influxdb/ks.yaml
   - ./telegraf/ks.yaml
