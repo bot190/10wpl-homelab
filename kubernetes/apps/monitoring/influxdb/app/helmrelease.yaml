@@ -45,9 +45,9 @@ spec:
       name: influxdb-pvc
     resources:
       requests:
-        memory: 500Mi
+        memory: 2000Mi
         cpu: 500m
       limits:
-        memory: 3000Mi
+        memory: 5000Mi
     pdb:
       enabled: false
