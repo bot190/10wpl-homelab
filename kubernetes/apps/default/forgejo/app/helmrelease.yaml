@@ -1,5 +1,5 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app forgejo
@@ -46,7 +46,7 @@ spec:
       annotations:
         hajimari.io/icon: simple-icons:forgejo
       hosts:
-        - host: &host "forgejo.${SECRET_DOMAIN}"
+        - host: &host "git.${SECRET_DOMAIN}"
           paths:
             - path: /
               pathType: Prefix
@@ -126,7 +126,7 @@ spec:
           ENABLED: true
         server:
           DOMAIN: *host
-          ROOT_URL: "https://forgejo.${SECRET_DOMAIN}/"
+          ROOT_URL: "https://git.${SECRET_DOMAIN}/"
           PROTOCOL: http
           SSH_DOMAIN: *host
           SSH_PORT: 22
