@@ -1,0 +1,134 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app romm
+  namespace: media
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+      interval: 15m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    controllers:
+      romm:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &envFrom
+              - secretRef:
+                  name: romm-secret
+        containers:
+          app:
+            image:
+              repository: ghcr.io/rommapp/romm
+              tag: 4.8.1
+            env:
+              TZ: "${TIMEZONE}"
+              ROMM_BASE_PATH: /romm
+              ROMM_BASE_URL: "https://romm.${SECRET_DOMAIN}"
+              ROMM_PORT: &port 8080
+              ROMM_DB_DRIVER: postgresql
+              DB_PORT: "5432"
+              REDIS_HOST: dragonfly.dragonfly.svc.cluster.local
+              REDIS_PORT: "6379"
+              REDIS_DB: "2"
+              HASHEOUS_API_ENABLED: "true"
+            envFrom: *envFrom
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/heartbeat
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/heartbeat
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 30
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+    defaultPodOptions:
+      hostname: *app
+      securityContext:
+        runAsUser: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
+        runAsGroup: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
+    service:
+      app:
+        controller: romm
+        ports:
+          http:
+            port: *port
+    ingress:
+      app:
+        enabled: true
+        className: nginx
+        annotations:
+          hajimari.io/icon: mdi:controller-classic
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      assets:
+        enabled: true
+        storageClass: zfs-nfs
+        accessMode: ReadWriteOnce
+        size: 10Gi
+        globalMounts:
+          - path: /romm/config
+            subPath: config
+          - path: /romm/assets
+            subPath: assets
+          - path: /romm/resources
+            subPath: resources
+      library:
+        enabled: true
+        type: custom
+        volumeSpec:
+          nfs:
+            path: /warehouse/media/roms
+            server: ${NFS_SERVER}
+        globalMounts:
+          - path: /romm/library

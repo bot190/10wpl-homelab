@@ -7,6 +7,7 @@ resources:
   - ./prowlarr/ks.yaml
   - ./radarr/ks.yaml
   - ./readarr/ks.yaml
+  - ./romm/ks.yaml
   - ./sonarr/ks.yaml
   - ./stump/ks.yaml
   - ./lidarr/ks.yaml
