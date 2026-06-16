@@ -1,0 +1,134 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app qbittorrent
+  namespace: media
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+      interval: 15m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    controllers:
+      qbittorrent:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/home-operations/qbittorrent-libtorrentv1
+              tag: 5.1.4@sha256:f8ded91789511af07db8e47bcfde9440f3c2d235e85b7eee13c9d03a7a4107c9
+            env:
+              TZ: "${TIMEZONE}"
+              QBT_WEBUI_PORT: &port 80
+              QBT_TORRENTING_PORT: &bittorrentPort 6881
+            probes:
+              liveness:
+                enabled: true
+                spec:
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v2/app/version
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+    defaultPodOptions:
+      hostname: *app
+      terminationGracePeriodSeconds: 300
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
+        runAsGroup: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
+        fsGroup: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+      bittorrent:
+        controller: *app
+        type: LoadBalancer
+        annotations:
+          metallb.universe.tf/loadBalancerIPs: "${METALLB_QBITTORRENT_ADDR}"
+        externalTrafficPolicy: Local
+        ports:
+          bittorrent-tcp:
+            port: *bittorrentPort
+            protocol: TCP
+          bittorrent-udp:
+            port: *bittorrentPort
+            protocol: UDP
+    ingress:
+      app:
+        enabled: true
+        className: nginx
+        annotations:
+          hajimari.io/icon: simple-icons:qbittorrent
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      config:
+        enabled: true
+        storageClass: zfs-nfs
+        globalMounts:
+          - path: /config
+        size: 1Gi
+        accessMode: ReadWriteOnce
+      media:
+        enabled: true
+        type: custom
+        volumeSpec:
+          nfs:
+            path: /warehouse/media
+            server: ${NFS_SERVER}
+        globalMounts:
+          - path: /media
+      tmp:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
