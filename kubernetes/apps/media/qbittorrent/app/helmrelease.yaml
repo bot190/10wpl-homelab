@@ -99,6 +99,8 @@ spec:
         className: nginx
         annotations:
           hajimari.io/icon: simple-icons:qbittorrent
+          gatus.home-operations.com/endpoint: |
+            path: /api/v2/app/version
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:

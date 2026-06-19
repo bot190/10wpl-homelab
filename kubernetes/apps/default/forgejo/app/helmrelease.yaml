@@ -45,6 +45,8 @@ spec:
       className: nginx
       annotations:
         hajimari.io/icon: simple-icons:forgejo
+        gatus.home-operations.com/endpoint: |
+          path: /api/healthz
       hosts:
         - host: &host "git.${SECRET_DOMAIN}"
           paths:
