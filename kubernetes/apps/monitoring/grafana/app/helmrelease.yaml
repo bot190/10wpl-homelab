@@ -113,6 +113,8 @@ spec:
       ingressClassName: nginx
       annotations:
         hajimari.io/icon: simple-icons:grafana
+        gatus.home-operations.com/endpoint: |
+          path: /api/health
       hosts:
         - &host "grafana.${SECRET_DOMAIN}"
       tls:

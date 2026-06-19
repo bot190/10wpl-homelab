@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./cluster16.yaml
   - ./database-forgejo.yaml
-  - ./gatus.yaml
   - ./forgejo-secret.sops.yaml
   - ./secret.sops.yaml
   - ./service.yaml

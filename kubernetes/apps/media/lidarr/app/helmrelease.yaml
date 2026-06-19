@@ -79,6 +79,8 @@ spec:
         className: nginx
         annotations:
           hajimari.io/icon: mdi:music
+          gatus.home-operations.com/endpoint: |
+            path: /ping
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:

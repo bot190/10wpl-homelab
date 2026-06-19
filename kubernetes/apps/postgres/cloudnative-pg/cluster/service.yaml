@@ -5,6 +5,16 @@ metadata:
   name: postgres-lb
   annotations:
     external-dns.alpha.kubernetes.io/hostname: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+    gatus.home-operations.com/enabled: "true"
+    gatus.home-operations.com/endpoint: |
+      name: postgres
+      group: infrastructure
+      url: tcp://postgres16-rw.postgres.svc.cluster.local:5432
+      interval: 1m
+      conditions:
+        - "[CONNECTED] == true"
+      alerts:
+        - type: pushover
 spec:
   type: LoadBalancer
   ports:
