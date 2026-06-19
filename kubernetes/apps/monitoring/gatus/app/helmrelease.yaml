@@ -140,7 +140,7 @@ spec:
           subjects:
             - identifier: gatus
     serviceAccount:
-      gatus: {}
+      identifier: gatus
     persistence:
       config:
         type: emptyDir
