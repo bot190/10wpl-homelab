@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/barmancloud.cnpg.io/objectstore_v1.json
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: postgres16-v5
+spec:
+  retentionPolicy: 30d
+  configuration:
+    data:
+      compression: bzip2
+    wal:
+      compression: bzip2
+      maxParallel: 8
+    destinationPath: s3://cloudnative-pg/
+    endpointURL: http://minio.default.svc.cluster.local:9000
+    s3Credentials:
+      accessKeyId:
+        name: cloudnative-pg-secret
+        key: s3-access-key-id
+      secretAccessKey:
+        name: cloudnative-pg-secret
+        key: s3-secret-access-key
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/barmancloud.cnpg.io/objectstore_v1.json
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: postgres16-v4
+spec:
+  configuration:
+    data:
+      compression: bzip2
+    wal:
+      compression: bzip2
+      maxParallel: 8
+    destinationPath: s3://cloudnative-pg/
+    endpointURL: http://minio.default.svc.cluster.local:9000
+    s3Credentials:
+      accessKeyId:
+        name: cloudnative-pg-secret
+        key: s3-access-key-id
+      secretAccessKey:
+        name: cloudnative-pg-secret
+        key: s3-secret-access-key

@@ -11,6 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: cert-manager
     - name: ingress-nginx
   path: ./kubernetes/apps/postgres/cloudnative-pg/app
   prune: false

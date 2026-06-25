@@ -6,6 +6,7 @@ resources:
   - ./cluster16.yaml
   - ./database-forgejo.yaml
   - ./forgejo-secret.sops.yaml
+  - ./objectstore.yaml
   - ./secret.sops.yaml
   - ./service.yaml
   - ./scheduledbackup.yaml
