@@ -53,6 +53,8 @@ spec:
               REDIS_DB: "2"
               HASHEOUS_API_ENABLED: "true"
               HLTB_API_ENABLED: "true"
+              SCAN_WORKERS: 8
+              SCAN_TIMEOUT: 86400
             envFrom: *envFrom
             probes:
               liveness: &probes
