@@ -1,0 +1,184 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app asterisk
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 5.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-labs
+        namespace: flux-system
+      interval: 15m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 5
+  values:
+    controllers:
+      asterisk:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/andrius/asterisk
+              tag: 22.10.1_debian-trixie
+            env:
+              TZ: "${TIMEZONE}"
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 5060
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 5060
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+      tftp:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: public.ecr.aws/docker/library/busybox
+              tag: 1.37.0
+            command:
+              - /bin/sh
+              - -c
+              - exec udpsvd -vE 0.0.0.0 69 tftpd /var/tftpboot
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                add:
+                  - NET_BIND_SERVICE
+                drop:
+                  - ALL
+            resources:
+              requests:
+                cpu: 5m
+                memory: 16Mi
+              limits:
+                memory: 64Mi
+    defaultPodOptions:
+      hostname: *app
+    service:
+      asterisk:
+        controller: asterisk
+        type: LoadBalancer
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: "pbx.${SECRET_DOMAIN}"
+          metallb.universe.tf/loadBalancerIPs: "${METALLB_ASTERISK_ADDR}"
+        externalTrafficPolicy: Local
+        ports:
+          sip-udp:
+            port: 5060
+            protocol: UDP
+          sip-tcp:
+            port: 5060
+            protocol: TCP
+          rtp:
+            portRange:
+              start: 10000
+              end: 10100
+            protocol: UDP
+      tftp:
+        controller: tftp
+        type: LoadBalancer
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: "tftp.${SECRET_DOMAIN}"
+          metallb.universe.tf/loadBalancerIPs: "${METALLB_ASTERISK_TFTP_ADDR}"
+        externalTrafficPolicy: Local
+        ports:
+          tftp:
+            port: 69
+            protocol: UDP
+    persistence:
+      asterisk-config:
+        enabled: true
+        type: configMap
+        name: asterisk-configmap
+        advancedMounts:
+          asterisk:
+            app:
+              - path: /etc/asterisk/extensions.conf
+                subPath: extensions.conf
+              - path: /etc/asterisk/features.conf
+                subPath: features.conf
+              - path: /etc/asterisk/logger.conf
+                subPath: logger.conf
+              - path: /etc/asterisk/modules.conf
+                subPath: modules.conf
+              - path: /etc/asterisk/pjsip.conf
+                subPath: pjsip.conf
+              - path: /etc/asterisk/rtp.conf
+                subPath: rtp.conf
+              - path: /etc/asterisk/voicemail.conf
+                subPath: voicemail.conf
+      asterisk-secret:
+        enabled: true
+        type: secret
+        name: asterisk-secret
+        advancedMounts:
+          asterisk:
+            app:
+              - path: /etc/asterisk/manager.conf
+                subPath: manager.conf
+                readOnly: true
+              - path: /etc/asterisk/pjsip-auth.conf
+                subPath: pjsip-auth.conf
+                readOnly: true
+      asterisk-data:
+        enabled: true
+        storageClass: zfs-nfs
+        accessMode: ReadWriteOnce
+        size: 4Gi
+        advancedMounts:
+          asterisk:
+            app:
+              - path: /var/lib/asterisk
+                subPath: lib
+              - path: /var/spool/asterisk
+                subPath: spool
+              - path: /var/log/asterisk
+                subPath: log
+      tftp-config:
+        enabled: true
+        type: configMap
+        name: asterisk-tftp-configmap
+        advancedMounts:
+          tftp:
+            app:
+              - path: /var/tftpboot/dialplan.xml
+                subPath: dialplan.xml
+              - path: /var/tftpboot/SEPAAAAAAAAAAAA.cnf.xml.template
+                subPath: SEPAAAAAAAAAAAA.cnf.xml.template
