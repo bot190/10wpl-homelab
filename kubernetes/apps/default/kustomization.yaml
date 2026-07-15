@@ -2,6 +2,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ./asterisk/repository.yaml
+  - ./asterisk/ks.yaml
   - ./atuin/ks.yaml
   - ./namespace.yaml
   - ./echo-server/ks.yaml

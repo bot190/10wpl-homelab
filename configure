@@ -142,6 +142,8 @@ verify_addressing() {
     local found_kube_vip="false"
     local found_k8s_gateway="false"
     local found_ingress="false"
+    local found_asterisk="false"
+    local found_asterisk_tftp="false"
     # Verify the metallb min and metallb ceiling are in the same network
     metallb_subnet_min=$(echo "${BOOTSTRAP_METALLB_LB_RANGE}" | cut -d- -f1 | cut -d. -f1,2,3)
     metallb_subnet_ceil=$(echo "${BOOTSTRAP_METALLB_LB_RANGE}" | cut -d- -f2 | cut -d. -f1,2,3)
@@ -177,6 +179,12 @@ verify_addressing() {
         if [[ "${addr}" == "${BOOTSTRAP_METALLB_INGRESS_ADDR}" ]]; then
             found_ingress="true"
         fi
+        if [[ "${addr}" == "${BOOTSTRAP_METALLB_ASTERISK_ADDR}" ]]; then
+            found_asterisk="true"
+        fi
+        if [[ "${addr}" == "${BOOTSTRAP_METALLB_ASTERISK_TFTP_ADDR}" ]]; then
+            found_asterisk_tftp="true"
+        fi
         for var in "${!BOOTSTRAP_ANSIBLE_HOST_ADDR_@}"; do
             if [[ "${!var}" == "${addr}" ]]; then
                 _log "ERROR(${FUNCNAME[0]})" "The IP for node '${!var}' should NOT be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
@@ -194,6 +202,14 @@ verify_addressing() {
     fi
     if [[ "${found_ingress}" == "false" ]]; then
         _log "ERROR(${FUNCNAME[0]})" "The IP for ingress '${BOOTSTRAP_METALLB_INGRESS_ADDR}' should be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
+        exit 1
+    fi
+    if [[ "${found_asterisk}" == "false" ]]; then
+        _log "ERROR(${FUNCNAME[0]})" "The IP for asterisk '${BOOTSTRAP_METALLB_ASTERISK_ADDR}' should be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
+        exit 1
+    fi
+    if [[ "${found_asterisk_tftp}" == "false" ]]; then
+        _log "ERROR(${FUNCNAME[0]})" "The IP for asterisk tftp '${BOOTSTRAP_METALLB_ASTERISK_TFTP_ADDR}' should be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
         exit 1
     fi
 }
@@ -248,10 +264,14 @@ verify_metallb() {
     _has_envar "BOOTSTRAP_METALLB_LB_RANGE"
     _has_envar "BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR"
     _has_envar "BOOTSTRAP_METALLB_INGRESS_ADDR"
+    _has_envar "BOOTSTRAP_METALLB_ASTERISK_ADDR"
+    _has_envar "BOOTSTRAP_METALLB_ASTERISK_TFTP_ADDR"
     _has_valid_ip "$(echo "${BOOTSTRAP_METALLB_LB_RANGE}" | cut -d- -f1)" "BOOTSTRAP_METALLB_LB_RANGE"
     _has_valid_ip "$(echo "${BOOTSTRAP_METALLB_LB_RANGE}" | cut -d- -f2)" "BOOTSTRAP_METALLB_LB_RANGE"
     _has_valid_ip "${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}" "BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR"
     _has_valid_ip "${BOOTSTRAP_METALLB_INGRESS_ADDR}" "BOOTSTRAP_METALLB_INGRESS_ADDR"
+    _has_valid_ip "${BOOTSTRAP_METALLB_ASTERISK_ADDR}" "BOOTSTRAP_METALLB_ASTERISK_ADDR"
+    _has_valid_ip "${BOOTSTRAP_METALLB_ASTERISK_TFTP_ADDR}" "BOOTSTRAP_METALLB_ASTERISK_TFTP_ADDR"
 }
 
 verify_git_repository() {
