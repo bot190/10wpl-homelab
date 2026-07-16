@@ -27,6 +27,10 @@ spec:
   values:
     controller:
       type: daemonset
+      volumes:
+        extra:
+          - name: tmp
+            emptyDir: {}
     global:
       podSecurityContext:
         runAsNonRoot: true
@@ -47,6 +51,10 @@ spec:
           memory: 128Mi
         limits:
           memory: 512Mi
+      mounts:
+        extra:
+          - name: tmp
+            mountPath: /tmp
       configMap:
         content: |
           logging {
