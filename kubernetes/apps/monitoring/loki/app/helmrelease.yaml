@@ -1,0 +1,116 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: loki
+  namespace: monitoring
+spec:
+  interval: 30m
+  timeout: 15m
+  chart:
+    spec:
+      chart: loki
+      version: 7.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    deploymentMode: SingleBinary
+    global:
+      extraArgs:
+        - -config.expand-env=true
+      extraEnvFrom:
+        - secretRef:
+            name: loki-s3-secret
+    loki:
+      auth_enabled: false
+      commonConfig:
+        replication_factor: 1
+      schemaConfig:
+        configs:
+          - from: "2026-07-01"
+            store: tsdb
+            object_store: s3
+            schema: v13
+            index:
+              prefix: index_
+              period: 24h
+      storage:
+        type: s3
+        bucketNames:
+          chunks: loki
+          ruler: loki
+          admin: loki
+        s3:
+          endpoint: http://minio.default.svc.cluster.local:9000
+          region: us-east-1
+          accessKeyId: $${LOKI_S3_ACCESS_KEY_ID}
+          secretAccessKey: $${LOKI_S3_SECRET_ACCESS_KEY}
+          s3ForcePathStyle: true
+          insecure: true
+      limits_config:
+        retention_period: 30d
+        allow_structured_metadata: true
+        volume_enabled: true
+      compactor:
+        retention_enabled: true
+        delete_request_store: s3
+      podSecurityContext:
+        fsGroup: "${SECURITY_CONTEXT_RUN_AS_GROUP}"
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: "${SECURITY_CONTEXT_RUN_AS_GROUP}"
+        runAsNonRoot: true
+        runAsUser: "${SECURITY_CONTEXT_RUN_AS_USER}"
+        seccompProfile: { type: RuntimeDefault }
+    singleBinary:
+      replicas: 1
+      extraArgs:
+        - -config.expand-env=true
+      persistence:
+        enabled: true
+        storageClass: ceph-block
+        size: 10Gi
+      resources:
+        requests:
+          cpu: 100m
+          memory: 512Mi
+        limits:
+          memory: 2Gi
+    read:
+      replicas: 0
+    write:
+      replicas: 0
+    backend:
+      replicas: 0
+    chunksCache:
+      enabled: false
+    resultsCache:
+      enabled: false
+    lokiCanary:
+      enabled: false
+    test:
+      enabled: false
+    monitoring:
+      dashboards:
+        enabled: true
+      serviceMonitor:
+        enabled: true
+      rules:
+        enabled: true
+        alerting: false
+    gateway:
+      enabled: true
+      replicas: 1
+      service:
+        type: ClusterIP
