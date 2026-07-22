@@ -7,15 +7,9 @@ metadata:
   namespace: media
 spec:
   interval: 15m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.7.3
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
-      interval: 15m
+  chartRef:
+    kind: OCIRepository
+    name: radarr
   install:
     createNamespace: true
     remediation:
@@ -96,6 +90,7 @@ spec:
     persistence:
       config:
         enabled: true
+        forceRename: radarr-config
         storageClass: zfs-nfs
         globalMounts:
           - path: /config
