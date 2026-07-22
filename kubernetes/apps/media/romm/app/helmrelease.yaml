@@ -7,15 +7,9 @@ metadata:
   namespace: media
 spec:
   interval: 15m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.7.3
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
-      interval: 15m
+  chartRef:
+    kind: OCIRepository
+    name: romm
   install:
     createNamespace: true
     remediation:
@@ -118,6 +112,7 @@ spec:
     persistence:
       assets:
         enabled: true
+        forceRename: romm-assets
         storageClass: zfs-nfs
         accessMode: ReadWriteOnce
         size: 20Gi
