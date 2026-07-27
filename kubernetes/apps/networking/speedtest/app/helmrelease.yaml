@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/linuxserver/librespeed
-              tag: 6.1.0
+              tag: 6.2.0
             env:
               TZ: ${TIMEZONE}
             resources:
