@@ -112,6 +112,63 @@ spec:
             forward_to = [loki.write.default.receiver]
           }
 
+          loki.relabel "syslog" {
+            forward_to = []
+
+            rule {
+              source_labels = ["__syslog_message_hostname"]
+              target_label  = "host"
+            }
+
+            rule {
+              source_labels = ["__syslog_message_app_name"]
+              target_label  = "app"
+            }
+
+            rule {
+              source_labels = ["__syslog_message_facility"]
+              target_label  = "facility"
+            }
+
+            rule {
+              source_labels = ["__syslog_message_severity"]
+              target_label  = "severity"
+            }
+          }
+
+          loki.source.syslog "rfc5424_udp" {
+            listener {
+              address                         = "0.0.0.0:1514"
+              protocol                        = "udp"
+              syslog_format                   = "rfc5424"
+              use_incoming_timestamp          = true
+              # rfc3164_default_to_current_year = true
+              labels = {
+                job      = "syslog",
+                protocol = "udp",
+              }
+            }
+
+            relabel_rules = loki.relabel.syslog.rules
+            forward_to    = [loki.write.default.receiver]
+          }
+
+          loki.source.syslog "rfc5424_tcp" {
+            listener {
+              address                = "0.0.0.0:1514"
+              protocol               = "tcp"
+              syslog_format          = "rfc5424"
+              use_incoming_timestamp = true
+              labels = {
+                job      = "syslog",
+                protocol = "tcp",
+              }
+            }
+
+            relabel_rules = loki.relabel.syslog.rules
+            forward_to    = [loki.write.default.receiver]
+          }
+
           loki.write "default" {
             endpoint {
               url = "http://loki-gateway.monitoring.svc.cluster.local/loki/api/v1/push"
