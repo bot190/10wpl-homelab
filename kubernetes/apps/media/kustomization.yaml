@@ -14,3 +14,4 @@ resources:
   - ./sabnzbd/ks.yaml
   - ./plex/ks.yaml
   - ./qbittorrent/ks.yaml
+  - ./tdarr/ks.yaml

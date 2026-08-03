@@ -1,0 +1,160 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app tdarr
+  namespace: media
+spec:
+  interval: 15m
+  chartRef:
+    kind: OCIRepository
+    name: tdarr
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    controllers:
+      server:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/haveagitgat/tdarr
+              tag: 2.84.01
+            env:
+              TZ: "${TIMEZONE}"
+              PUID: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
+              PGID: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
+              UMASK_SET: "002"
+              inContainer: "true"
+              ffmpegVersion: "7"
+              serverIP: 0.0.0.0
+              serverPort: "8266"
+              webUIPort: "8265"
+              internalNode: "false"
+              openBrowser: "false"
+            probes:
+              liveness: &server-probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v2/status
+                    port: &server-port 8266
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 2
+                  failureThreshold: 6
+              readiness: *server-probe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v2/status
+                    port: *server-port
+                  periodSeconds: 5
+                  timeoutSeconds: 2
+                  failureThreshold: 60
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+        pod:
+          tolerations:
+            - effect: NoSchedule
+              key: node-role.kubernetes.io/control-plane
+              operator: Exists
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: node-role.kubernetes.io/control-plane
+                        operator: Exists
+    service:
+      app:
+        controller: server
+        type: LoadBalancer
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: "{{ .Release.Name }}-server.${SECRET_DOMAIN}"
+        ports:
+          http:
+            port: &web-port 8265
+          server:
+            port: *server-port
+    ingress:
+      app:
+        enabled: true
+        className: nginx
+        annotations:
+          hajimari.io/icon: mdi:movie-cog
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    defaultPodOptions:
+      securityContext:
+        fsGroup: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
+        fsGroupChangePolicy: OnRootMismatch
+    persistence:
+      server-data:
+        enabled: true
+        storageClass: zfs-nfs
+        accessMode: ReadWriteOnce
+        size: 10Gi
+        advancedMounts:
+          server:
+            app:
+              - path: /app/server
+      transcode-cache:
+        enabled: true
+        type: persistentVolumeClaim
+        storageClass: zfs-nfs
+        accessMode: ReadWriteMany
+        size: 50Gi
+        forceRename: tdarr-transcode-cache
+        globalMounts:
+          - path: /temp
+      tv:
+        enabled: true
+        type: custom
+        volumeSpec:
+          nfs:
+            path: /warehouse/media/tv
+            server: "${NFS_SERVER}"
+        globalMounts:
+          - path: /media/tv
+      movies:
+        enabled: true
+        type: custom
+        volumeSpec:
+          nfs:
+            path: /warehouse/media/movies
+            server: "${NFS_SERVER}"
+        globalMounts:
+          - path: /media/movies
+      music:
+        enabled: true
+        type: custom
+        volumeSpec:
+          nfs:
+            path: /warehouse/media/music
+            server: "${NFS_SERVER}"
+        globalMounts:
+          - path: /media/music
