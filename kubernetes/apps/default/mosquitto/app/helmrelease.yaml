@@ -29,8 +29,8 @@ spec:
         initContainers:
           01-init-config:
             image:
-              repository: public.ecr.aws/docker/library/eclipse-mosquitto
-              tag: 2.0.22
+              repository: docker.io/eclipse-mosquitto
+              tag: 2.1.2-alpine
               pullPolicy: IfNotPresent
             command: ["/bin/sh", "-c"]
             args:
@@ -40,8 +40,8 @@ spec:
         containers:
           app:
             image:
-              repository: public.ecr.aws/docker/library/eclipse-mosquitto
-              tag: 2.0.22
+              repository: docker.io/eclipse-mosquitto
+              tag: 2.1.2-alpine
     defaultPodOptions:
       hostname: *app
       securityContext:
@@ -53,6 +53,7 @@ spec:
         type: LoadBalancer
         annotations:
           external-dns.alpha.kubernetes.io/hostname: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          metallb.io/loadBalancerIPs: 192.168.16.120
         externalTrafficPolicy: Cluster
         ports:
           http:
