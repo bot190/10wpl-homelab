@@ -142,7 +142,6 @@ spec:
               protocol                        = "udp"
               syslog_format                   = "rfc5424"
               use_incoming_timestamp          = true
-              # rfc3164_default_to_current_year = true
               labels = {
                 job      = "syslog",
                 protocol = "udp",
