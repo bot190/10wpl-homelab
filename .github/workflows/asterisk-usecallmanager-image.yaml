@@ -1,0 +1,40 @@
+---
+name: Asterisk USECALLMANAGER Image
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - containers/asterisk-usecallmanager/**
+      - .github/workflows/asterisk-usecallmanager-image.yaml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+      - name: Log in to GHCR
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+        with:
+          context: containers/asterisk-usecallmanager
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/asterisk-usecallmanager:22.10.0
+            ghcr.io/${{ github.repository_owner }}/asterisk-usecallmanager:22
