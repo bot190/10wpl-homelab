@@ -19,9 +19,6 @@ spec:
       strategy: RollingUpdate
     podAnnotations:
       reloader.stakater.com/search: "true"
-    image:
-      repo: "docker.io/library/telegraf"
-      tag: "1.27-alpine"
     env:
       TZ: "${TIMEZONE}"
     resources:
