@@ -1,4 +1,6 @@
 ---
+version: "0.18-0"
+
 logger:
   default: info
   # logs:
@@ -38,9 +40,10 @@ snapshots:
 
 record:
   enabled: true
-  retain:
+  continuous:
     days: 2
-    mode: all
+  motion:
+    days: 2
   alerts:
     retain:
       days: 30
@@ -108,7 +111,11 @@ cameras:
       height: 480
       fps: 10
     motion:
-      mask: "0.732,0.038,0.731,0.086,0.975,0.082,0.974,0.036"
+      mask:
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: "0.732,0.038,0.731,0.086,0.975,0.082,0.974,0.036"
 
   frigate_driveway_back:
     ffmpeg:
@@ -127,7 +134,11 @@ cameras:
       height: 480
       fps: 10
     motion:
-      mask: "0.754,0.041,0.756,0.081,0.994,0.08,0.995,0.04"
+      mask:
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: "0.754,0.041,0.756,0.081,0.994,0.08,0.995,0.04"
 
   frigate_driveway_front:
     ffmpeg:
@@ -144,7 +155,11 @@ cameras:
       height: 480
       fps: 10
     motion:
-      mask: "0.73,0.039,0.731,0.077,0.972,0.08,0.972,0.04"
+      mask:
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: "0.73,0.039,0.731,0.077,0.972,0.08,0.972,0.04"
 
   frigate_lean_to:
     ffmpeg:
@@ -163,7 +178,11 @@ cameras:
       height: 480
       fps: 10
     motion:
-      mask: "0.73,0.041,0.731,0.081,0.974,0.082,0.975,0.04"
+      mask:
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: "0.73,0.041,0.731,0.081,0.974,0.082,0.975,0.04"
 
   frigate_mailbox:
     ffmpeg:
@@ -199,4 +218,8 @@ cameras:
       height: 480
       fps: 10
     motion:
-      mask: "0.041,0.062,0.62,0.062,0.622,0.120,0.041,0.120"
+      mask:
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: "0.041,0.062,0.62,0.062,0.622,0.120,0.041,0.120"
