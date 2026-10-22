@@ -8,13 +8,16 @@ sonarr:
     media_management:
       propers_and_repacks: do_not_prefer
     quality_profiles:
-      - trash_id: 72dae194fc92bf828f32cde7744e51a1 # WEB-1080p
+      - trash_id: 9d142234e45d6143785ac55f5a9e8dc9 # WEB-1080p Alternative
         reset_unmatched_scores:
           enabled: true
       - trash_id: c4cadd6b35b95f62c3d47a408e53e2f7 # WEB-2160p (Combined)
         reset_unmatched_scores:
           enabled: true
-      - name: 720p
+      - name: WEB-720p
+        trash_id: 72dae194fc92bf828f32cde7744e51a1 # WEB-720p
+        reset_unmatched_scores:
+          enabled: true
         reset_unmatched_scores:
           enabled: true
         upgrade:
