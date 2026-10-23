@@ -18,8 +18,6 @@ sonarr:
         trash_id: 72dae194fc92bf828f32cde7744e51a1 # WEB-720p
         reset_unmatched_scores:
           enabled: true
-        reset_unmatched_scores:
-          enabled: true
         upgrade:
           allowed: true
           until_quality: Bluray-720p
