@@ -51,6 +51,9 @@ spec:
                   httpGet:
                     path: /ping
                     port: *port
+                    httpHeaders:
+                      - name: Host
+                        value: sonarr
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
