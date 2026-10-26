@@ -47,6 +47,9 @@ spec:
 
   # Create postgres database and user
   values:
+    podLabels:
+      networking.10wpl.com/dragonfly-client: "true"
+
     initContainers:
       - name: init-db
         image: ghcr.io/onedr0p/postgres-init:16
@@ -182,6 +185,14 @@ spec:
       enabled: false
     reportsPersistence:
       enabled: false
+
+    worker:
+      podLabels:
+        networking.10wpl.com/dragonfly-client: "true"
+
+    housekeeping:
+      podLabels:
+        networking.10wpl.com/dragonfly-client: "true"
 
     podAnnotations:
       secret.reloader.stakater.com/reload: "netbox-database,netbox-s3-secret"

@@ -81,6 +81,8 @@ spec:
                 memory: 1Gi
     defaultPodOptions:
       hostname: *app
+      labels:
+        networking.10wpl.com/dragonfly-client: "true"
       securityContext:
         runAsUser: "${MEDIA_SECURITY_CONTEXT_RUN_AS_USER}"
         runAsGroup: "${MEDIA_SECURITY_CONTEXT_RUN_AS_GROUP}"
