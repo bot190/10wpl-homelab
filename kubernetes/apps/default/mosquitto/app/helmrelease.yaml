@@ -30,7 +30,7 @@ spec:
           01-init-config:
             image:
               repository: docker.io/eclipse-mosquitto
-              tag: 2.1.2-alpine
+              tag: 2.1.4-alpine
               pullPolicy: IfNotPresent
             command: ["/bin/sh", "-c"]
             args:
@@ -41,7 +41,7 @@ spec:
           app:
             image:
               repository: docker.io/eclipse-mosquitto
-              tag: 2.1.2-alpine
+              tag: 2.1.4-alpine
     defaultPodOptions:
       hostname: *app
       securityContext:
